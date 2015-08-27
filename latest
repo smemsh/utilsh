@@ -1,13 +1,20 @@
 #!/usr/bin/env bash4
 #
-# - find the latest regular file in a directory tree by mtime
-# - returns the human-readable modtime of the file
+# chkbatt
+#   find the latest regular file in a directory tree by mtime
+#   returns the human-readable modtime of the file
 #
-# - todo: allow other kinds of times to be tested
-# - todo: make sure this will handle filenames with newlines
-# - todo: flags to print the name, the date, or both
-# - todo: handle other kinds of inodes besides regular files
+# todo
+#   - allow other kinds of times to be tested
+#   - make sure this will handle filenames with newlines
+#   - flags to print the name, the date, or both
+#   - handle other kinds of inodes besides regular files
 #
+# http://smemsh.net/src/chkbatt
+# http://spdx.org/licenses/GPL-2.0
+# scott@smemsh.net
+#
+##############################################################################
 
 if [[ $1 =~ [[:digit:]] && $2 ]]
 then howmany=$1; shift; fi
