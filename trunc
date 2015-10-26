@@ -1,0 +1,13 @@
+#!/bin/bash
+#
+# trunc
+#   wraps coreutils 'truncate', making all args zero bytes
+#
+# args:
+#   - any options and files to give to 'truncate'
+#
+# scott@smemsh.net
+# http://smemsh.net/utilsh/
+# http://spdx.org/licenses/GPL-2.0.html
+
+truncate --size=0 "$@"
