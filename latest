@@ -1,8 +1,8 @@
-#!/usr/bin/env bash4
+#!/bin/bash
 #
-# chkbatt
-#   find the latest regular file in a directory tree by mtime
-#   returns the human-readable modtime of the file
+# latest
+#   - find the latest regular file in a directory tree by mtime
+#   - prints the human-readable modtime of the file on stdout
 #
 # todo
 #   - allow other kinds of times to be tested
@@ -10,7 +10,7 @@
 #   - flags to print the name, the date, or both
 #   - handle other kinds of inodes besides regular files
 #
-# http://smemsh.net/src/chkbatt
+# http://smemsh.net/src/utilsh/
 # http://spdx.org/licenses/GPL-2.0
 # scott@smemsh.net
 #
