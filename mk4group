@@ -8,6 +8,10 @@
 #   - system group given as $1
 #   - all remaining args: trees to be recursively converted
 #
+# note
+#   - fragile, probably breaks with a range of input
+#   - definitely breaks if spaces in args, no quoting done
+#
 # scott@smemsh.net
 # http://smemsh.net/utilsh/
 # http://spdx.org/licenses/GPL-2.0.html
@@ -53,18 +57,29 @@ dirtree_user2group_baseperm ()
 main ()
 {
 	local group=$1; shift
+	local dir dirent path parent
 
 	gid=$(getent group $group | awk -F : '{print $(NF-1)}')
 	[[ $gid ]] || bomb "group $group does not look up"
 
-	for ((i = 1; i <= $#; i++)); do
+	for ((i = 1; i <= $#; i++))
+	do
 		dir=${!i}
 		test -d $dir
 		test -w $dir
-		cd $dir/..
-		dirtree_change_group $gid $dir
-		dirtree_setgid_on_dirs $dir
-		dirtree_user2group_baseperm ${dir##*/}
+
+		# need to qualify/deref, for when eg '.'
+		# TODO this is hack, everything should take path
+		#
+		path=`readlink -e $dir`
+		parent=${path%/*}
+		dirent=${path##*/}
+
+		cd $parent
+		dirtree_change_group $gid $path
+		dirtree_setgid_on_dirs $path
+		dirtree_user2group_baseperm $dirent
+		cd $OLDPWD
 	done
 }
 
