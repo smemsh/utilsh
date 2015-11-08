@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+#
+# daemonize
+#   - do the fork/exec/setsid/disown/stdio thing as daemons do
+#   - use logger to redirect stdout and stderr to syslog using given prefix
+#
+# args
+#   - arg1: quoted string, will be unquoted to make argv for invoked program
+#   - arg2: prefix to use (less colons) in syslog messages
+#
+# stat
+#   - used by author to start things
+#   - please notify author if using
+#
+# todo
+#   - code to close fds exists, but commented out, need to test
+#
+# http://smemsh.net/src/utilsh/
+# http://spdx.org/licenses/GPL-2.0
+# scott@smemsh.net
+#
+##############################################################################
+
+argzero=$0
+startargv=($1)
+logprefix="$2"
+
+readlink_opts=(--silent --canonicalize --no-newline)
+
+###
+
+parse_args ()
+{
+	progname=$(
+		basename $(readlink --silent --canonicalize --no-newline $0))
+
+	if (($# != 2)); then
+		echo "$progname: badargs" >&2; exit 10; fi
+
+	if ! type -p $startargv &>/dev/null; then
+		echo "$progname: dne" >&2; exit 20; fi
+}
+
+nullify_stdio_fds ()
+{
+	exec </dev/null
+	exec &>/dev/null
+}
+
+close_nonstd_fds ()
+{
+	local BASHOPTS
+	shopt -u failglob nullglob
+	for fd in /proc/$BASHPID/fd/{3..255}; do
+		exec $fd<&-; done
+}
+
+##############################################################################
+
+main ()
+{
+	parse_args "$@"
+
+	cd /
+
+	# TODO test
+	#nullify_stdio_fds
+	#close_nonstd_fds
+
+	set -o pipefail
+
+	exec setsid env -i \
+	LOGNAME=$LOGNAME \
+	USER=$USER \
+	HOME=$HOME \
+	PATH=$PATH \
+	EDITOR=$EDITOR \
+	DISPLAY=$DISPLAY \
+	SHELL=$SHELL \
+	TERM=$TERM \
+	LANG=$LANG \
+	${startargv[@]} |&
+	logger -t "$logprefix" \
+	& disown $!
+}
+
+main "$@"
