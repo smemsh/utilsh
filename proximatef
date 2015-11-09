@@ -1,0 +1,91 @@
+#!/bin/bash
+#
+# proximatef
+#   find files in temporal proximity
+#
+# desc:
+#   outputs matching files that: (1) are located somewhere
+#   within user-specified tree, and (2) have mtimes within
+#   specified range of reference file
+#
+# args:
+#   - arg1: allowed +/- mtime variance
+#   - arg2: mtime reference file
+#   - arg3: match files only in tree rooted here
+#   - argN: [treeN] ...
+#   - if only one arg, use $default_variance and file's parent
+#
+# deps:
+#   - http://smemsh.net/src/libsh/ (for 'include' and 'require')
+#
+# todo:
+#   - use libsh rc to add proper options
+#   - allow ctime in addition to mtime
+#   - handle case of filenames starting with '-'
+#
+# http://smemsh.net/src/utilsh/
+# http://spdx.org/licenses/GPL-2.0
+# scott@smemsh.net
+#
+##############################################################################
+
+source ~/lib/sh/include
+require time_since_mod
+
+# tolerance (minutes) if only one arg given (file referent)
+#
+default_variance=5
+
+##############################################################################
+
+usage_exit ()
+{
+	fmt --crown-margin <<- .
+	$(basename $0):
+	usage: find files by
+	mtime proximity +/- \$1 mins
+	to reference file \$2
+	rooted at \$3 and \$4 and ...
+	.
+	exit
+}
+
+##############################################################################
+
+parse_args ()
+{
+	# shortcut to specify just one arg: the path to the
+	# reference file, and then we default to a single
+	# base dir to search rooted at the same location as
+	# the reference file, with a default variance
+	#
+	(($# == 1)) && {
+		[[ $1 == -* ]] && usage_exit
+		set -- $default_variance $1 `dirname $1`
+	}
+
+	(($# < 3)) &&
+		usage_exit
+
+	variance=$1
+	refpath=$2
+
+	for ((i = 3; i <= $#; i++)); do
+		searchroots+=(`readlink --canonicalize ${!i}`); done
+}
+
+main ()
+{
+	parse_args $@
+	modmins=`time_since_mod $refpath`
+
+	find ${searchroots[@]} \
+		-type f \
+		-mmin -$((modmins + variance)) \
+		-mmin +$((modmins - variance)) \
+	;
+}
+
+##############################################################################
+
+main $@
