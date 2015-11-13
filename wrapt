@@ -1,0 +1,139 @@
+#!/bin/bash
+#
+# wrapt
+#   apt, dpkg convenience wrapper
+#
+# stat:
+#   - mostly incomplete
+#   - please notify author if using
+#
+# also:
+#   - dctrl-tools
+#   - ara
+#   - dpkg-awk
+#   - sgrep
+#
+# todo:
+#   - verify names in "also"
+#   - does not handle spaces in package names or other input, as usual
+#
+# scott@smemsh.net
+# http://smemsh.net/src/wrapt/
+# http://spdx.org/licenses/GPL-2.0.html
+#
+##############################################################################
+
+# does dpkg know about a locally installed package matching name
+# (handles single package only, must iterate for multiple)
+#
+pkg_exists_locally ()
+{
+	dpkg-query --status $1 &>/dev/null
+}
+
+function_exists ()
+{
+	declare -f $1 &>/dev/null
+}
+
+##############################################################################
+
+# summary description field (first line)
+#
+_short () { aptitude search -F %p%d "$@"; }
+
+# long description field
+#
+# TODO this is broken (grep-avail does not return full fields like desc for all
+# packages) so we do it ourself for now (see next function) rather than fix and
+# submit bug, under time constraint at the moment --smemsh20150218174127
+#
+#_desc ()
+#{
+#	local i
+#	local pkg pkgstr
+#	local pkgs=()
+#	local select="-PX"
+#
+#	for pkg; do pkgs+=("$select $pkg"); done
+#
+#	# full args, has at least first one
+#	pkgstr="$pkgs "
+#
+#	# any additional need '-o' to disjoin
+#	for ((i = 1; i < ${#pkgs[@]}; i++))
+#		do pkgstr+="-o ${pkgs[i]} "; done
+#
+#	grep-available -ns package,description $pkgstr
+#
+#}
+
+# long description field
+#
+_desc ()
+{
+	local pkg
+
+	for pkg
+	do apt-cache search --names-only --full "^$pkg\$" \
+	| grep -E \
+		-e ^Package: \
+		-e ^Description: \
+		-e ^Description-en: \
+		-e '^[[:space:]]+' \
+	| sed \
+		-e s,^Package:.,, \
+		-e s,^Description:.,'\n  >>> ', \
+		-e s,^Description-en:.,'\n  >>> ', \
+	; echo; done
+}
+
+# package owning given file
+# TODO relies on permissions to test local or not
+# TODO this is a substring search, not a pattern match
+#      add another interfaces for exact match
+#
+_owns ()
+{
+	local file
+
+	for file
+	do if test -e $file
+	then dlocate -S $file
+	else apt-file search $file
+	fi; done | awk -F : '{print $1}'
+}
+
+# all fs entries owned by given package
+#
+_ls () { _contents "$@"; }
+_list () { _contents "$@"; }
+_contents ()
+{
+	local pkg
+
+	for pkg
+	do if pkg_exists_locally $pkg
+	then dlocate -L $pkg
+	else apt-file -F show $pkg
+	fi; done | awk '{print $2}' | grep -v ^/\\.
+}
+
+# TODO make a 'name' to search names (using aptitude probably)
+#
+_search ()
+{
+	apt-cache search "$@" |
+	awk -F ' - ' '{printf("%-30s %s\n", $1, $2)}'
+}
+
+##############################################################################
+
+main ()
+{
+	if function_exists _$1
+	then _$1 "${@:2}"
+	else echo unimplemented; fi
+}
+
+main "$@"
