@@ -34,8 +34,11 @@ parse_args ()
 	progname=$(
 		basename $(readlink --silent --canonicalize --no-newline $0))
 
-	if (($# != 2)); then
-		echo "$progname: badargs" >&2; exit 10; fi
+	if (($# == 1)); then
+		logprefix=$startargv
+	elif (($# != 2)); then
+		echo "$progname: badargs" >&2; exit 10
+	fi
 
 	if ! type -p $startargv &>/dev/null; then
 		echo "$progname: dne" >&2; exit 20; fi
