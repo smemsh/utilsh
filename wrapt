@@ -108,6 +108,7 @@ _owns ()
 #
 _ls () { _contents "$@"; }
 _list () { _contents "$@"; }
+_files () { _contents "$@"; }
 _contents ()
 {
 	local pkg
