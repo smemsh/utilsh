@@ -88,20 +88,23 @@ _desc ()
 	; echo; done
 }
 
-# package owning given file
-# TODO relies on permissions to test local or not
-# TODO this is a substring search, not a pattern match
-#      add another interfaces for exact match
+# package owning given file paths
+# args: '-x' given path is a regex, not glob pattern
+# TODO: relies on permissions to test local or not
 #
 _owns ()
 {
-	local file
+	local arg rx
 
-	for file
-	do if test -e $file
-	then dlocate -S $file
-	else apt-file search $file
-	fi; done | awk -F : '{print $1}'
+	if [[ $1 == '-x' ]]; then
+		rx=1; shift; fi
+
+	for arg; do
+		if test -e "$arg"
+		then dlocate ${rx:+'-l'} -S "$arg"
+		else apt-file ${rx:+'-x'} search "$arg"
+		fi
+	done | awk -F : '{print $1}'
 }
 
 # all fs entries owned by given package
