@@ -102,7 +102,7 @@ _owns ()
 	for arg; do
 		if test -e "$arg"
 		then dlocate ${rx:+'-l'} -S "$arg"
-		else apt-file ${rx:+'-x'} search "$arg"
+		else apt-file search ${rx:+'-x'} "$arg"
 		fi
 	done | awk -F : '{print $1}'
 }
