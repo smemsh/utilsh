@@ -119,8 +119,8 @@ _contents ()
 	for pkg
 	do if pkg_exists_locally $pkg
 	then dlocate -L $pkg
-	else apt-file -F show $pkg
-	fi; done | awk '{print $1}' | grep -v ^/\\.
+	else apt-file -F show $pkg | sed -r 's,^[^[:space:]]+[[:space:]],,'
+	fi; done | grep -v ^/\\.
 }
 
 # TODO make a 'name' to search names (using aptitude probably)
