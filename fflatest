@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# latestf
+# fflatest
 #   - find the latest regular file in a directory tree by mtime
 #   - prints the human-readable modtime of the file on stdout
 #
