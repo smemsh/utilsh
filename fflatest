@@ -1,8 +1,7 @@
 #!/bin/bash
 #
 # fflatest
-#   - find the latest regular file in a directory tree by mtime
-#   - prints the human-readable modtime of the file on stdout
+#   find latest regular file in dirtree by mtime, print parseable mtime stdout
 #
 # todo
 #   - allow other kinds of times to be tested

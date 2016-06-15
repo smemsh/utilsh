@@ -1,8 +1,7 @@
 #!/bin/bash
 #
 # mk4group
-#   - makes directories setgid-group, recursively
-#   - mode bits are copied from user to group
+#   - makes directories setgid, recursively; copy mode bits from user to group
 #
 # args
 #   - system group given as $1

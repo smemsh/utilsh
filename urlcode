@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
-# urlcode.sh
-#   command line en/de -coding of urls to clean http refs
+# urlcode
+#   command line encode/decode of urls to clean http refs
 #
 # args:
 #   - invoke as urlencode or urldecode

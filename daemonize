@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 #
 # daemonize
-#   - do the fork/exec/setsid/disown/stdio thing as daemons do
+#   do the fork/exec/setsid/disown/stdio thing as daemons do, log to syslog
+#
+# desc
+#   - performs all the steps daemons do in eg C programs, for shell scripts
 #   - use logger to redirect stdout and stderr to syslog using given prefix
 #
 # args
