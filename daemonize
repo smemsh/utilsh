@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
 #
 # daemonize
-#   do the fork/exec/setsid/disown/stdio thing as daemons do, log to syslog
+#   initialize environment, fork/exec, setsid/disown, stdout/err to syslog
 #
 # desc
-#   - performs all the steps daemons do in eg C programs, for shell scripts
+#   - performs all the steps daemons do in C programs, but for shell scripts
 #   - use logger to redirect stdout and stderr to syslog using given prefix
+#   - starts daemon with clean environment (only "standard" base env retained)
 #
 # args
 #   - arg1: quoted string, will be unquoted to make argv for invoked program
 #   - arg2: prefix to use (less colons) in syslog messages
+#   - (if one arg supplied, log prefix will be invocation name)
 #
 # stat
 #   - used by author to start things
@@ -50,6 +52,10 @@ nullify_stdio_fds ()
 	exec &>/dev/null
 }
 
+# otherwise some programs, like lvm tools for example, leak fds to the
+# daemonized version that we do not want (and the shell itself may use up to
+# fd 10 for its own internal purposes, if memory serves)
+#
 close_nonstd_fds ()
 {
 	local BASHOPTS
