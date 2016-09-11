@@ -37,13 +37,14 @@ default_variance=5
 
 usage_exit ()
 {
-	fmt --crown-margin <<- .
+	cat <<- %
 	$(basename $0):
-	usage: find files by
-	mtime proximity +/- \$1 mins
-	to reference file \$2
-	rooted at \$3 and \$4 and ...
-	.
+	usage: find files by mtime proximity:
+		\$1 +/- this many minutes from
+		\$2 reference file, in directories
+		\$3 and \$4 and ...
+		(one arg only: use referent parent with ${default_variance}m)
+	%
 	exit
 }
 
