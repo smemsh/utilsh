@@ -29,9 +29,6 @@
 #
 ##############################################################################
 
-source ~/lib/sh/include
-require time_since_mod
-
 # tolerance (minutes) if only one arg given (file referent)
 #
 default_variance=5
@@ -48,6 +45,21 @@ usage_exit ()
 	rooted at \$3 and \$4 and ...
 	.
 	exit
+}
+
+# this is snarfed from our libsh because we don't want any
+# external dependencies in utilsh (and, it might be the only
+# user, but that should be verified)
+#
+time_since_mod ()
+{
+	local now lastmod
+	test -f $lastmod || return
+
+	now=`date +%s`
+	lastmod=`stat --format=%Y $1`
+
+	printf $((($now - $lastmod) / 60))
 }
 
 ##############################################################################
