@@ -28,14 +28,11 @@ argzero=$0
 startargv=($1)
 logprefix="$2"
 
-readlink_opts=(--silent --canonicalize --no-newline)
-
 ###
 
 parse_args ()
 {
-	progname=$(
-		basename $(readlink --silent --canonicalize --no-newline $0))
+	progname=$(readlink --silent --canonicalize --no-newline ${0##*/})
 
 	if (($# == 1)); then
 		logprefix=$startargv
