@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+#
+# installx
+#   copies all exe files and in-dir symlinks from $1/ to $2/
+#
+# scott@smemsh.net
+# http://smemsh.net/src/utilsh/
+# http://spdx.org/licenses/GPL-2.0
+#
+##############################################################################
+
+main ()
+{
+	srcdir=$1
+	dstdir=${2%/}
+
+	if (($# != 2)); then
+		echo "${0##*/}: required args: <srcdir> <dstdir>"; exit; fi
+
+	if ! cd $srcdir; then
+		echo "source dir invalid"; false; exit; fi
+
+	basefind="find -mindepth 1 -maxdepth 1"
+	scripts=($($basefind -type f -perm -01))
+	symlinks=($($basefind -type l -not -lname '*/*'))
+
+	if ! cp -av ${scripts[@]} ${symlinks[@]} $dstdir/; then
+		echo "copy failed"; false; exit; fi
+
+	echo "installed to $dstdir"
+}
+
+main "$@"
