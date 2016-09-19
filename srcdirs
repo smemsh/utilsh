@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+#
+# srcdirs
+#   all git repos in $1 with config attribute $2 == 'true' printed
+#
+# note:
+#   - does not handle spaces in repo paths (and newline is OFS)
+#   - works only with non-bare repositories
+#   - default basedir ~/src
+#   - default pubattr 'srcdirs.ispublic'
+#
+# scott@smemsh.net
+# http://smemsh.net/src/utilsh/
+# http://spdx.org/licenses/GPL-2.0
+#
+##############################################################################
+
+basedir=${1:-~/src}
+pubattr=${2:-'srcdirs.ispublic'}
+
+export GIT_DIR
+
+for dir in $(
+	find $basedir/ \
+	-mindepth 2 \
+	-maxdepth 2 \
+	-type d \
+	-name '.git' \
+); do
+	GIT_DIR="$dir"
+	ispublic=$(git config --get --bool $pubattr)
+	[[ $ispublic == 'true' ]] &&
+		echo "$dir"
+done
