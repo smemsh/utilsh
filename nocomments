@@ -1,0 +1,12 @@
+#!/bin/sed -rf
+#
+# - strips leading comments
+# - collapses blank lines
+
+/^\s*#/d
+/^$/d
+
+# this was awk -f version, but has trailing newline
+#BEGIN {RS=" "}
+#/^(#|$)/ {next}
+#{print}
