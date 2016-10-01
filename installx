@@ -56,6 +56,31 @@ check_sanity ()
 		echo "cannot write to dstdir '$dst/'"; false; exit; fi
 }
 
+
+print_execution_stats ()
+{
+	pluralize ()
+	{
+		printf $1
+		(($2 > 1)) && printf 's'
+	}
+
+	local nscripts=${#scripts[@]}
+	local nsymlinks=${#symlinks[@]}
+
+	local src="$src/"
+	local dst="$dst/"
+
+	if [[ $src$dst =~ [^[:alnum:]_-/] ]]
+	then src="\"$src\"" dst="\"$dst\""; fi
+
+	echo "$src -> $dst"
+	printf "installed "
+	printf "$nscripts `pluralize script $nscripts`, "
+	printf "$nsymlinks `pluralize symlink $nsymlinks`"
+	echo
+}
+
 main ()
 {
 	process_args "$@" || exit
@@ -69,20 +94,10 @@ main ()
 	readarray -d $'\0' scripts < <($find_base $find_scripts $find_print)
 	readarray -d $'\0' symlinks < <($find_base $find_symlinks $find_print)
 
-	set -v
 	if ! cp -a "${scripts[@]}" "${symlinks[@]}" "$dst/"; then
 		echo "copy failed"; false; exit; fi
-	set +v
-
-	nscripts=${#scripts[@]}
-	nsymlinks=${#symlinks[@]}
-
-	pluralize () { printf $1; (($2 > 1)) && printf 's'; }
-	echo "$src -> $dst"
-	printf "installed "
-	printf "$nscripts `pluralize script $nscripts`, "
-	printf "$nsymlinks `pluralize symlink $nsymlinks`"
-	echo
+	
+	print_execution_stats
 }
 
 main "$@"
