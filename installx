@@ -62,7 +62,8 @@ print_execution_stats ()
 	pluralize ()
 	{
 		printf $1
-		(($2 > 1)) && printf 's'
+		if (($2 == 0 || $2 > 1)); then
+			printf 's'; fi
 	}
 
 	local nscripts=${#scripts[@]}
