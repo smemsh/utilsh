@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # installx
-#   copies all exe files and in-dir symlinks from $1/ to $2/
+#   copies all exe files and in-dir symlinks from $1:-./ to $2:-~/bin/
 #
 # scott@smemsh.net
 # http://smemsh.net/src/utilsh/
@@ -9,29 +9,76 @@
 #
 ##############################################################################
 
-main ()
+src_default="${PWD:?}"
+dst_default="${HOME:?}/bin"
+
+usagex ()
 {
-	srcdir=$1
-	dstdir=${2%/}
+	echo "$invname: args: <srcdir> <dstdir>"
+	echo "$invname: default: src='$src_default' dst='$dst_default'"
+	false; exit
+}
 
-	if (($# != 2)); then
-		echo "${0##*/}: required args: <srcdir> <dstdir>"; exit; fi
+process_args ()
+{
+	local yn
+	local ask=1
+	declare -g src dst
 
-	if ! cd $srcdir; then
+	if [[ $1 =~ (-f|--noask|--force) ]]
+	then ask=0; shift; fi # default without asking
+
+	case $# in
+	(0) src="$src_default" dst="$dst_default";;
+	(2) src="$1" dst="$2";;
+	(*) usagex;;
+	esac
+
+	dst="${dst%/}"
+
+	if ((ask)); then
+		read -n 1 -p "overwrite in $dst/ with $src/* (y/n)? " yn; echo
+		if [[ $yn != 'y' ]]; then
+			echo "aborting"; false; exit; fi
+	fi
+}
+
+check_sanity ()
+{
+	if ! test -d "$dst"; then
+		if ! mkdir -p "$dst"; then
+			echo "dest '$dst/' dne and mkdir failed"; exit; fi; fi
+
+	if ! cd "$src"; then
 		echo "source dir invalid"; false; exit; fi
 
-	if ! test -d $dstdir; then
-		if ! mkdir -p $dstdir; then
-			echo "source dir dne and mkdir failed"; exit; fi; fi
+	if ! test -w "$dst"; then
+		echo "cannot write to dstdir '$dst/'"; false; exit; fi
+}
 
-	basefind="find -mindepth 1 -maxdepth 1"
-	scripts=($($basefind -type f -perm -01))
-	symlinks=($($basefind -type l -not -lname '*/*'))
+main ()
+{
+	process_args "$@" || exit
+	check_sanity "$src" "$dst" || exit
 
-	if ! cp -av ${scripts[@]} ${symlinks[@]} $dstdir/; then
+	find_base="find -mindepth 1 -maxdepth 1"
+	find_scripts="-type f -perm -01"
+	find_symlinks="-type l -not -lname */*"
+	find_print="-printf %P\\0"
+
+	readarray -d $'\0' scripts < <($find_base $find_scripts $find_print)
+	readarray -d $'\0' symlinks < <($find_base $find_symlinks $find_print)
+
+	set -v
+	if ! cp -a "${scripts[@]}" "${symlinks[@]}" "$dst/"; then
 		echo "copy failed"; false; exit; fi
+	set +v
 
-	echo "installed to $dstdir"
+	printf "installed ${#scripts[@]} scripts "
+	printf "and ${#symlinks[@]} symlink"
+	((${#symlinks[@]} > 1)) && printf 's'
+	printf ' '
+	echo "to $dst/"
 }
 
 main "$@"
