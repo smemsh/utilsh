@@ -74,11 +74,15 @@ main ()
 		echo "copy failed"; false; exit; fi
 	set +v
 
-	printf "installed ${#scripts[@]} scripts "
-	printf "and ${#symlinks[@]} symlink"
-	((${#symlinks[@]} > 1)) && printf 's'
-	printf ' '
-	echo "to $dst/"
+	nscripts=${#scripts[@]}
+	nsymlinks=${#symlinks[@]}
+
+	pluralize () { printf $1; (($2 > 1)) && printf 's'; }
+	echo "$src -> $dst"
+	printf "installed "
+	printf "$nscripts `pluralize script $nscripts`, "
+	printf "$nsymlinks `pluralize symlink $nsymlinks`"
+	echo
 }
 
 main "$@"
