@@ -20,6 +20,10 @@ main ()
 	if ! cd $srcdir; then
 		echo "source dir invalid"; false; exit; fi
 
+	if ! test -d $dstdir; then
+		if ! mkdir -p $dstdir; then
+			echo "source dir dne and mkdir failed"; exit; fi; fi
+
 	basefind="find -mindepth 1 -maxdepth 1"
 	scripts=($($basefind -type f -perm -01))
 	symlinks=($($basefind -type l -not -lname '*/*'))
