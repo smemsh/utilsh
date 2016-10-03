@@ -92,8 +92,19 @@ main ()
 	find_symlinks="-type l -not -lname */*"
 	find_print="-printf %P\\0"
 
-	readarray -d $'\0' scripts < <($find_base $find_scripts $find_print)
-	readarray -d $'\0' symlinks < <($find_base $find_symlinks $find_print)
+	#
+	# mapfile delim is a bash 4.4 feature, so we cannot use it yet
+	#readarray -d $'\0' scripts < <($find_base $find_scripts $find_print)
+	#readarray -d $'\0' symlinks < <($find_base $find_symlinks $find_print)
+	#
+
+	while read -d $'\0'
+	do scripts+=("$REPLY")
+	done < <($find_base $find_scripts $find_print)
+
+	while read -d $'\0'
+	do symlinks+=("$REPLY")
+	done < <($find_base $find_symlinks $find_print)
 
 	if ! cp -a "${scripts[@]}" "${symlinks[@]}" "$dst/"; then
 		echo "copy failed"; false; exit; fi
