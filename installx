@@ -106,7 +106,7 @@ main ()
 	do symlinks+=("$REPLY")
 	done < <($find_base $find_symlinks $find_print)
 
-	if ! cp -a "${scripts[@]}" "${symlinks[@]}" "$dst/"; then
+	if ! cp -af "${scripts[@]}" "${symlinks[@]}" "$dst/"; then
 		echo "copy failed"; false; exit; fi
 	
 	print_execution_stats
