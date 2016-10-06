@@ -139,7 +139,7 @@ installx ()
 	find_into script "$exes";
 	find_into exelink "$links"
 
-	if ! echo cp \
+	if ! cp \
 		--archive \
 		--remove-destination \
 		"${script_names[@]}" \
@@ -160,7 +160,7 @@ installrc ()
 	for ((i = 0; i < n; i++)); do
 		name="${rclink_names[i]}"
 		ref="${rclink_refs[i]}"
-		echo ln -rsf "$src/$ref" "$dst/$name"
+		ln -rsf "$src/$ref" "$dst/$name"
 	done
 }
 
