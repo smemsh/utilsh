@@ -88,7 +88,7 @@ print_execution_stats ()
 			printf 's'; fi
 	}
 
-	if [[ $src$dst =~ [^[:alnum:]_-/] ]]
+	if [[ $src$dst =~ [^[:alnum:]_-/.+,:@] ]]
 	then src="\"$src\"" dst="\"$dst\""; fi
 
 	echo "$src -> $dst"
