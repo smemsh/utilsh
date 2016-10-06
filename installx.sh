@@ -50,7 +50,7 @@ process_args ()
 	#
 	dst="${2:-${HOME:?}}"; dst="${dst%/}"
 	if [[ $invname == installx && ! $2 ]]; then
-		dst="$dst/bin/"; fi
+		dst="$dst/bin"; fi
 
 	if ((ask)); then
 		read -n 1 -p "overwrite in $dst/ with $src/* (y/n)? " yn; echo
