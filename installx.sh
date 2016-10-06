@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 #
-# installx
-#   copies all exe files and in-dir symlinks from $1:-./ to $2:-~/bin/
+# installx: installx, installrc
+#   installs exe files and in-dir exelinks, or all .rclinks, to [homedir]
+#
+# desc:
+#   - copy all exefiles and in-dir symlinks from ${1:-./} to ${2:-~/bin/}, OR:
+#   - copy all .rclinks as ${1:-.}/.rclink -> ${2:-~/${PWD##*/}}/target
 #
 # scott@smemsh.net
 # http://smemsh.net/src/utilsh/
@@ -9,13 +13,17 @@
 #
 ##############################################################################
 
-src_default="${PWD:?}"
-dst_default="${HOME:?}/bin"
+invname=${0##*/}
+
+findbase="find -mindepth 1 -maxdepth 1"
+exes="-type f -perm -01"
+links="-type l -not -lname */*"
+dots="-name .*"
 
 usagex ()
 {
 	echo "$invname: args: <srcdir> <dstdir>"
-	echo "$invname: default: src='$src_default' dst='$dst_default'"
+	echo "$invname: default: src='$src' dst='$dst'"
 	false; exit
 }
 
@@ -23,18 +31,26 @@ process_args ()
 {
 	local yn
 	local ask=1
+
 	declare -g src dst
 
-	if [[ $1 =~ (-f|--noask|--force) ]]
-	then ask=0; shift; fi # default without asking
+	if [[ $1 =~ (-f|--noask|--force) ]]; then
+		ask=0; shift; fi
 
-	case $# in
-	(0) src="$src_default" dst="$dst_default";;
-	(2) src="$1" dst="$2";;
-	(*) usagex;;
-	esac
+	if ! (($# == 0 || $# == 2)); then
+		usagex; fi
 
-	dst="${dst%/}"
+	# where to get the files, defaults to the invocation dir
+	#
+	src="${1:-${PWD:?}}"
+
+	# where to put the files
+	# - last arg to single 'cp' if installing executables
+	# - dirname component of last arg to each 'ln' if installing rclinks
+	#
+	dst="${2:-${HOME:?}}"; dst="${dst%/}"
+	if [[ $invname == installx && ! $2 ]]; then
+		dst="$dst/bin/"; fi
 
 	if ((ask)); then
 		read -n 1 -p "overwrite in $dst/ with $src/* (y/n)? " yn; echo
@@ -49,7 +65,7 @@ check_sanity ()
 		if ! mkdir -p "$dst"; then
 			echo "dest '$dst/' dne and mkdir failed"; exit; fi; fi
 
-	if ! cd "$src"; then
+	if ! test -d "$src"; then
 		echo "source dir invalid"; false; exit; fi
 
 	if ! test -w "$dst"; then
@@ -59,6 +75,12 @@ check_sanity ()
 
 print_execution_stats ()
 {
+	local which
+	local already
+
+	local src="$src/"
+	local dst="$dst/"
+
 	pluralize ()
 	{
 		printf $1
@@ -66,58 +88,95 @@ print_execution_stats ()
 			printf 's'; fi
 	}
 
-	local nscripts=${#scripts[@]}
-	local nsymlinks=${#symlinks[@]}
-
-	local src="$src/"
-	local dst="$dst/"
-
 	if [[ $src$dst =~ [^[:alnum:]_-/] ]]
 	then src="\"$src\"" dst="\"$dst\""; fi
 
 	echo "$src -> $dst"
+
 	printf "installed "
-	printf "$nscripts `pluralize script $nscripts`, "
-	printf "$nsymlinks `pluralize symlink $nsymlinks`"
+	for which in script exelink rclink; do
+		eval count="\${#${which}_names[@]}"
+		((count)) || continue
+		((already++)) && printf ", "
+		printf "$count `pluralize $which $count`"
+	done
+
 	echo
 }
 
-main ()
+# reads zero-delimited records from find command "$2"
+# command into array named $1 (declared before calling us)
+#
+find_into ()
 {
-	process_args "$@" || exit
-	check_sanity "$src" "$dst" || exit
+	local field
+	local what=$1
+	local findargs="$2"
 
-	find_base="find -mindepth 1 -maxdepth 1"
-	find_scripts="-type f -perm -01"
-	find_symlinks="-type l -not -lname */*"
-	find_print="-printf %P\\0"
+	local findprint="-printf %P\\0%l\\0" # %l is empty if not symlink
+	local findcmd="$findbase $findargs $findprint"
 
+	# keep getting name-ref field pairs
+	#  ref is empty when not a symlink (name\0\0), but still
+	#  exists as a delimited field, so it counts correctly
+	#  and proper offsets are retained in the loop for links
+	#  and non-links
 	#
-	# mapfile delim is a bash 4.4 feature, so we cannot use it yet
-	#readarray -d $'\0' scripts < <($find_base $find_scripts $find_print)
-	#readarray -d $'\0' symlinks < <($find_base $find_symlinks $find_print)
-	#
+	while true
+	do
+		for which in names refs
+		do
+			read -d $'\0' field || break 2
+			eval ${what}_${which}+=\(\"\$field\"\)
+		done
+	done < <(set -f; $findcmd)
+}
 
-	while read -d $'\0'
-	do scripts+=("$REPLY")
-	done < <($find_base $find_scripts $find_print)
+##############################################################################
 
-	while read -d $'\0'
-	do symlinks+=("$REPLY")
-	done < <($find_base $find_symlinks $find_print)
+installx ()
+{
+	find_into script "$exes";
+	find_into exelink "$links"
 
-	if ! cp \
+	if ! echo cp \
 		--archive \
 		--remove-destination \
-		"${scripts[@]}" \
-		"${symlinks[@]}" \
+		"${script_names[@]}" \
+		"${exelink_names[@]}" \
 		"$dst/"
 	then
 		echo "copy failed"
 		false
 		exit
 	fi
-	
+}
+
+installrc ()
+{
+	find_into rclink "$links $dots"
+
+	n=${#rclink_names[@]}
+	for ((i = 0; i < n; i++)); do
+		name="${rclink_names[i]}"
+		ref="${rclink_refs[i]}"
+		echo ln -rsf "$src/$ref" "$dst/$name"
+	done
+}
+
+##############################################################################
+
+main ()
+{
+	process_args "$@" || exit
+	check_sanity || exit
+
+	cd "$src" || exit
+
+	if [[ $(declare -F $invname) ]]
+	then $invname "$@"
+	else echo "unimplemented command '$1'"; fi
+
 	print_execution_stats
 }
 
