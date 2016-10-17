@@ -1,4 +1,4 @@
-#!/usr/bin/env bash4
+#!/usr/bin/env bash
 #
 # markless
 #   converts markdown file to roff macros, typesets for term and pages
