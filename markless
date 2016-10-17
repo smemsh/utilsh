@@ -1,0 +1,44 @@
+#!/usr/bin/env bash4
+#
+# markless
+#   converts markdown file to roff macros, typesets for term and pages
+#
+# desc:
+#   - input file can be optionally compressed (.gz)
+#   - input file can be optionally without .md or .md.gz extension
+#
+# creds:
+#   - snarfed pandoc invocation: Keith Thompson
+#     http://stackoverflow.com/questions/7599447/
+#
+# deps:
+#   - pandoc
+#
+# todo:
+#   - refactor this, at least 2 factors to reduce on
+#   - does not handle spaces
+#   - barfs if one of the filename variants does not exist
+#
+# scott@smemsh.net
+# http://smemsh.net/src/utilsh/
+# http://spdx.org/licenses/GPL-2.0
+#
+##############################################################################
+
+export f=$1
+type pandoc &>/dev/null || exit
+pandoc -s -f markdown -t man <(
+	if test -f $f.md
+	then cat $f.md
+	elif test -f $f.markdown
+	then cat $f.markdown
+	elif test -f $f
+	then cat $f
+	elif test -f $f.md.gz
+	then gzip -dc $f.md.gz
+	elif test -f $f.gz
+	then gzip -dc $f.gz
+	else exit
+	fi
+) |
+command man -l -
