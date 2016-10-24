@@ -1,0 +1,65 @@
+#!/usr/bin/gawk -f
+#
+# columnate
+#   break input into columns by width of its longest word, fill to $COLUMNS
+#
+# todo:
+#   - shebang magic does not take multiple arguments on linux, so we run
+#     "gawk -f" but on osx we do not have gawk installed in the same
+#     location (ie it's from macports)
+#
+# http://smemsh.net/src/utilsh/
+# http://spdx.org/licenses/GPL-2.0
+# scott@smemsh.net
+#
+##############################################################################
+
+BEGIN {
+	inter_cell_pad = 1
+	termwidth = ENVIRON["COLUMNS"]
+	if (!termwidth) exit EXIT_FAILURE
+}
+
+# todo: support parsing input on any whitespace, not just lines
+# todo: also should support breaking on NUL chars in the input
+# todo: support breaking by regex? allow direct input to RS awk variable?
+#
+{
+	len = length()
+	if (len > longest_word)
+		longest_word = len
+	records[NR]=$0
+}
+
+END {
+	# how many chars in each column incl at least one char
+	# padding per column for visual break between columns
+	#
+	cellwidth = longest_word + inter_cell_pad
+
+	# how many of said cells on each line
+	# ie, count this many and then emit newline
+	# 
+	columns = int(termwidth / cellwidth)
+
+	# echo each word, emitting newline every 'columns', or
+	# a column separator, if not a newline
+	#
+	for (word = 1; word <= NR; word++) {
+		text = records[word]
+		printf("%-*s", longest_word, text)
+		remaining = int(word % columns)
+		if (!remaining)
+			printf("\n")
+		else for (i = 0; i < inter_cell_pad; i++)
+			printf(" ")
+	}
+
+	# if we happen to be at the end of a line, we won't
+	#   want a double newline
+	# todo: there should be a way to do without this test?
+	#   what is the edge case?
+	#
+	if (remaining)
+		printf("\n")
+}
