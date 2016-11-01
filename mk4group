@@ -7,10 +7,6 @@
 #   - system group to chgrp given as $1
 #   - all remaining args: trees to be recursively converted
 #
-# note
-#   - fragile, probably breaks with a range of input
-#   - definitely breaks if spaces in args, no quoting done
-#
 # scott@smemsh.net
 # http://smemsh.net/src/utilsh/
 # http://spdx.org/licenses/GPL-2.0
@@ -28,22 +24,22 @@ bomb ()
 dirtree_setgid_on_dirs ()
 {
 	local dir=$1
-	find $dir/ -type d -print0 \
+	find "$dir" -type d -print0 \
 	| xargs -r0 chmod g+s
 }
 
 dirtree_change_group ()
 {
 	local grp=$1
-	local dir=$2
-	chgrp -R $grp $dir/
+	local dir="$2"
+	chgrp -R $grp "$dir"
 }
 
 dirtree_user2group_baseperm ()
 {
-	local dir=$1
+	local dir="$1"
 
-	getfacl --recursive --access $dir |
+	getfacl --recursive --access "$dir" |
 	sed -e '
 		/^user:/ { h; b; }			# hold onto user perms
 		/^group:/ { x; s/^user:/group:/; b; }	# group becomes held
@@ -56,33 +52,34 @@ dirtree_user2group_baseperm ()
 main ()
 {
 	local group=$1; shift
-	local dir dirent path parent
+	local gid dir path
 
 	gid=$(getent group $group | awk -F : '{print $(NF-1)}')
-	[[ $gid ]] || bomb "group $group does not look up"
+	if ! [[ $gid ]]; then
+		bomb "group $group does not look up"; fi
 
 	for ((i = 1; i <= $#; i++))
 	do
-		dir=${!i}
-		test -d $dir
-		test -w $dir
+		dir="${!i}"
+		path=$(readlink -e "$dir")
 
-		# need to qualify/deref, for when eg '.'
-		# TODO this is hack, everything should take path
-		#
-		path=`readlink -e $dir`
-		parent=${path%/*}
-		dirent=${path##*/}
+		test -d "$path" ||
+			bomb "path '$path' dne"
 
-		cd $parent
-		dirtree_change_group $gid $path
-		dirtree_setgid_on_dirs $path
-		dirtree_user2group_baseperm $dirent
-		cd $OLDPWD
+		test -w "$path" ||
+			bomb "path '$path' not writable"
+
+		dirtree_change_group $gid "$path" ||
+			bomb "chrgrp failed"
+
+		dirtree_setgid_on_dirs "$path" ||
+			bomb "setgid failed"
+
+		dirtree_user2group_permcopy "$path" ||
+			bomb "perms copy failed"
 	done
 }
 
 ###
 
-set -e
 main "$@"
