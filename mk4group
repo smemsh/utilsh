@@ -35,16 +35,16 @@ dirtree_change_group ()
 	chgrp -R $grp "$dir"
 }
 
-dirtree_user2group_baseperm ()
+dirtree_user2group_permcopy ()
 {
 	local dir="$1"
+	local permbit
 
-	getfacl --recursive --access "$dir" |
-	sed -e '
-		/^user:/ { h; b; }			# hold onto user perms
-		/^group:/ { x; s/^user:/group:/; b; }	# group becomes held
-	' |
-	setfacl --restore=-
+	for permbit in 4 2 1
+	do
+		find "$dir" -perm -0${permbit}00 -print0 \
+		| xargs -r0 chmod +00${permbit}0
+	done
 }
 
 ##############################################################################
