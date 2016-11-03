@@ -1,0 +1,96 @@
+#!/bin/bash
+#
+# greenv
+#   start program as user with green environment (clean but sane)
+#
+# usage:
+#   - must be invoked as root (use sudo)
+#   - arg1: user to run as
+#   - argN: argument vector for program
+#
+# desc:
+#   - wraps program invocation as different user via sudo -u
+#   - only basic/minimal sanitized version of environment passed in
+#   - does not involve session layer, pam, etc
+#   - impetus for this program was originally a "gem install" user+wrapper
+#   - beyond that, useful to replace: su -lc "env - ENV=ENV1 ... args" user
+#
+# note:
+#   - redhat 'runuser' would work, but see debian bug 8700
+#   - waiting for upstream util-linux release
+#   - update: may be deprecated; runuser now is in jessie
+#   - update: debian runuser starts login shell, uses pam?!?! (todo: verify)
+#   - update: sudo uses pam anyways!
+#
+# todo:
+#   - integrate with ~/.bash/{init,env}
+#   - does not handle spaces in any of the exports
+#   - embeds call to sudo -- NOT GOOD, was whole point of runuser
+#
+# scott@smemsh.net
+# http://smemsh.net/src/utilsh/
+# http://spdx.org/licenses/GPL-2.0
+#
+##############################################################################
+
+umask 002
+
+PATH=/usr/local/bin:/bin:/sbin:/usr/bin:/usr/sbin
+LD_LIBRARY_PATH=/usr/local/lib
+
+exports=(PATH LD_LIBRARY_PATH)
+exports+=(LINES COLUMNS LANG TERM)
+exports+=(HOSTNAME DISPLAY)
+exports+=(HOME USER USERNAME LOGNAME)
+
+###
+
+process_args ()
+{
+	declare -g user=$1
+
+	(($# >= 2)) || return 3
+	(($EUID == 0)) || return 7 # assert: already root
+	getent passwd $user &>/dev/null || return 13 # assert: user exists
+}
+
+set_user_envs ()
+{
+	local var
+	for var in USER LOGNAME USERNAME; do
+		declare -gx $var=$user; done
+}
+
+set_home_envs ()
+{
+	local homedir
+
+	eval homedir=~$USER
+	[[ $homedir ]] &&
+	test -d $homedir &&
+	test -r $homedir &&
+	test -x $homedir &&
+	declare -gx HOME=$homedir
+}
+
+mkenvs ()
+{
+	local v
+
+	xline="$exports=${!exports}"
+	for ((i = 1; i < ${#exports[@]}; i++)); do
+		v=${exports[i]}; xline+=" $v=${!v}"; done
+}
+
+###
+
+main ()
+{
+	process_args "$@" || exit $?; shift
+	set_user_envs $user || exit 20
+	set_home_envs $user || exit 30
+	mkenvs
+	sudo -u $user env - $xline "$@"
+}
+
+main "$@"
