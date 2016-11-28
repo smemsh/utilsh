@@ -102,6 +102,8 @@ print_execution_stats ()
 		printf "$count `pluralize $which $count`"
 	done
 
+	if ((already == 0)); then
+		printf "nothing"; fi
 	echo
 }
 
@@ -140,11 +142,15 @@ installx ()
 	find_into script "$files $exes";
 	find_into exelink "$links $exes"
 
+	local -a srcfiles=("${script_names[@]}" "${exelink_names[@]}")
+
+	if ((${#srcfiles[@]} == 0)); then
+		echo "no files to copy, skipping"; return; fi
+
 	if ! cp \
 		--archive \
 		--remove-destination \
-		"${script_names[@]}" \
-		"${exelink_names[@]}" \
+		"${srcfiles[@]}" \
 		"$dst/"
 	then
 		echo "copy failed"
