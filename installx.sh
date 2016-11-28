@@ -4,8 +4,8 @@
 #   installs exe files and in-dir exelinks, or all .rclinks, to [homedir]
 #
 # desc:
-#   - copy all exefiles and in-dir symlinks from ${1:-./} to ${2:-~/bin/}, OR:
-#   - copy all .rclinks as ${1:-.}/.rclink -> ${2:-~/${PWD##*/}}/target
+#  - installx: cp exefiles & symlinks to in-dir exes: ${1:-./} -> ${2:-~/bin/}
+#  - installrc: cp .rclinks as: ${1:-.}/.rclink -> ${2:-~/${PWD##*/}}/target
 #
 # scott@smemsh.net
 # http://smemsh.net/src/utilsh/
@@ -16,8 +16,9 @@
 invname=${0##*/}
 
 findbase="find -mindepth 1 -maxdepth 1"
-exes="-type f -perm -01"
+files="-type f"
 links="-type l -not -lname */*"
+exes="-executable" # unlike -perm -01, uses referent if symlink
 dots="-name .*"
 
 usagex ()
@@ -136,8 +137,8 @@ find_into ()
 
 installx ()
 {
-	find_into script "$exes";
-	find_into exelink "$links"
+	find_into script "$files $exes";
+	find_into exelink "$links $exes"
 
 	if ! cp \
 		--archive \
@@ -154,7 +155,7 @@ installx ()
 
 installrc ()
 {
-	find_into rclink "$links $dots"
+	find_into rclink "$links $dots -not $exes"
 
 	n=${#rclink_names[@]}
 	for ((i = 0; i < n; i++)); do
