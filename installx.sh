@@ -40,13 +40,14 @@ process_args ()
 	if opts=($(
 		getopt \
 		-n $invname \
-		-o fh \
-		-l force,help \
+		-o qfh \
+		-l quiet,force,help \
 		-- \
 		"$@" \
 	)); then
 		for arg in ${opts[@]}
 		do case $arg in
+		(-q|--quiet) quiet=1; shift;;
 		(-f|--force) ask=0; shift;;
 		(-h|--help) usagex;;
 		(--) shift; break;; # end of options
@@ -55,6 +56,9 @@ process_args ()
 	else
 		usagex
 	fi
+
+	if ((quiet && ask)); then
+		echo "quiet mode cannot be interactive"; false; exit; fi
 
 	if ! (($# == 0 || $# == 2)); then
 		usagex; fi
@@ -162,8 +166,8 @@ installx ()
 
 	local -a srcfiles=("${script_names[@]}" "${exelink_names[@]}")
 
-	if ((${#srcfiles[@]} == 0)); then
-		echo "no files to copy, skipping"; return; fi
+	if ((${#srcfiles[@]} == 0 && ! quiet))
+	then echo "no files to copy, skipping"; return; fi
 
 	if ! cp \
 		--archive \
@@ -202,7 +206,8 @@ main ()
 	then $invname "$@"
 	else echo "unimplemented command '$1'"; fi
 
-	print_execution_stats
+	if ((! quiet)); then
+		print_execution_stats; fi
 }
 
 main "$@"
