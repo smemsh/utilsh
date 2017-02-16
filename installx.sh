@@ -23,8 +23,8 @@ dots="-name .*"
 
 usagex ()
 {
-	echo "$invname: args: <srcdir> <dstdir>"
-	echo "$invname: default: src='$src' dst='$dst'"
+	echo "$invname: args: <srcdir> <dstdir>" >&2
+	echo "$invname: default: src='$src' dst='$dst'" >&2
 	false; exit
 }
 
@@ -58,7 +58,7 @@ process_args ()
 	fi
 
 	if ((quiet && ask)); then
-		echo "quiet mode cannot be interactive"; false; exit; fi
+		echo "quiet mode cannot be interactive" >&2; false; exit; fi
 
 	if ! (($# == 0 || $# == 2)); then
 		usagex; fi
@@ -86,13 +86,13 @@ check_sanity ()
 {
 	if ! test -d "$dst"; then
 		if ! mkdir -p "$dst"; then
-			echo "dest '$dst/' dne and mkdir failed"; exit; fi; fi
+			echo "dest '$dst/' dne or bad mkdir" >&2; exit; fi; fi
 
 	if ! test -d "$src"; then
-		echo "source dir invalid"; false; exit; fi
+		echo "source dir invalid" >&2; false; exit; fi
 
 	if ! test -w "$dst"; then
-		echo "cannot write to dstdir '$dst/'"; false; exit; fi
+		echo "cannot write to dstdir '$dst/'" >&2; false; exit; fi
 }
 
 
@@ -175,7 +175,7 @@ installx ()
 		"${srcfiles[@]}" \
 		"$dst/"
 	then
-		echo "copy failed"
+		echo "copy failed" >&2
 		false
 		exit
 	fi
@@ -204,7 +204,7 @@ main ()
 
 	if [[ $(declare -F $invname) ]]
 	then $invname "$@"
-	else echo "unimplemented command '$1'"; fi
+	else echo "unimplemented command '$1'" >&2; fi
 
 	if ((! quiet)); then
 		print_execution_stats; fi
