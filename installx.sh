@@ -31,12 +31,30 @@ usagex ()
 process_args ()
 {
 	local yn
-	local ask=1
-
+	local -a opts
 	declare -g src dst
 
-	if [[ $1 =~ (-f|--noask|--force) ]]; then
-		ask=0; shift; fi
+	# default to interactive confirm after src/dst canonicalization
+	local ask=1
+
+	if opts=($(
+		getopt \
+		-n $invname \
+		-o fh \
+		-l force,help \
+		-- \
+		"$@" \
+	)); then
+		for arg in ${opts[@]}
+		do case $arg in
+		(-f|--force) ask=0; shift;;
+		(-h|--help) usagex;;
+		(--) shift; break;; # end of options
+		(*) usagex;;
+		esac; done
+	else
+		usagex
+	fi
 
 	if ! (($# == 0 || $# == 2)); then
 		usagex; fi
