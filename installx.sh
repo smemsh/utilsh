@@ -166,8 +166,10 @@ installx ()
 
 	local -a srcfiles=("${script_names[@]}" "${exelink_names[@]}")
 
-	if ((${#srcfiles[@]} == 0 && ! quiet))
-	then echo "no files to copy, skipping"; return; fi
+	if ((${#srcfiles[@]} == 0)); then
+		((quiet)) || echo "no files to copy, skipping"
+		return
+	fi
 
 	if ! cp \
 		--archive \
