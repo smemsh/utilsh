@@ -42,7 +42,10 @@ dirtree_user2group_permcopy ()
 
 	for permbit in 4 2 1
 	do
-		find "$dir" -perm -0${permbit}00 -print0 \
+		find "$dir" \
+			-not -type l \
+			-perm -0${permbit}00 \
+			-print0 \
 		| xargs -r0 chmod +00${permbit}0
 	done
 }
