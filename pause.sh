@@ -20,7 +20,7 @@ main ()
 	(*) echo "unimplemented"; false; exit;;
 	esac
 
-	pid=`pgrep -o $1`
+	pid=`pgrep -o ${1:?}`
 	[[ $pid ]] || { echo failed; false; exit; }
 
 	# we can't just use pgid= because ps seems to space-pad for
