@@ -6,6 +6,7 @@
 # desc:
 #  - installx: cp exefiles & symlinks to in-dir exes: ${1:-./} -> ${2:-~/bin/}
 #  - installrc: cp .rclinks as: ${1:-.}/.rclink -> ${2:-~/${PWD##*/}}/target
+#  - (see process_args() for invocation options)
 #
 # scott@smemsh.net
 # http://smemsh.net/src/utilsh/
@@ -25,6 +26,16 @@ usagex ()
 {
 	echo "$invname: args: <srcdir> <dstdir>" >&2
 	echo "$invname: default: src='$src' dst='$dst'" >&2
+	echo "$invname: options:" >&2
+
+	# you'd think this grep doesn't need the '.*' parts if you look
+	# at the source but remember it's bash prettification we grep
+	#
+	declare -f process_args \
+	| grep -oP -- '-\w.*\|.*--[\w-]+' \
+	| sed s,^,\\t, \
+	>&2
+
 	false; exit
 }
 
