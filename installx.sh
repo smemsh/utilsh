@@ -24,10 +24,11 @@ dots="-name .*"
 
 usagex ()
 {
-	echo "$invname: args: <srcdir> <dstdir>" >&2
-	echo "$invname: default: src='$src' dst='$dst'" >&2
-	echo "$invname: options:" >&2
-
+	cat <<- % >&2
+	$invname: args: [<srcdir> <dstdir>]
+	$invname: default: src:./ exe:~/bin/ rc:~/
+	$invname: options:
+	%
 	# you'd think this grep doesn't need the '.*' parts if you look
 	# at the source but remember it's bash prettification we grep
 	#
