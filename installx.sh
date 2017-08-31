@@ -44,12 +44,14 @@ process_args ()
 {
 	local yn
 	local -a opts
-	declare -g src dst
+	declare -g src dst dryrun
+	declare -ag cmd
 	declare -g ask=1 # default if unforced confirm
 
 	eval set -- $(getopt -n $invname \
-	-o qfh -l quiet,forcehelp -- "$@")
+	-o qfnh -l quiet,force,test,help -- "$@")
 	for arg; do case $arg in
+	(-n|--test) dryrun=1; shift;;
 	(-q|--quiet) quiet=1; shift;;
 	(-f|--force) ask=0; shift;;
 	(-h|--help) usagex;;
@@ -62,6 +64,8 @@ process_args ()
 
 	if ((quiet && ask)); then
 		echo "quiet mode cannot be interactive" >&2; false; exit; fi
+	if ((dryrun && force)); then
+		echo "the force is not with you" >&2; false; exit; fi
 
 	# where to get the files, defaults to the invocation dir
 	#
@@ -121,9 +125,9 @@ print_execution_stats ()
 	if [[ $src$dst =~ [^[:alnum:]_-/.+,:@] ]]
 	then src="\"$src\"" dst="\"$dst\""; fi
 
-	echo "$src -> $dst"
+	echo "${dryrun:+testmode: }$src -> $dst"
 
-	printf "installed "
+	printf "${dryrun:+testmode: }installed "
 	for which in script exelink rclink; do
 		eval count="\${#${which}_names[@]}"
 		((count)) || continue
@@ -164,6 +168,14 @@ find_into ()
 	done < <(set -f; $findcmd)
 }
 
+cmd ()
+{
+	if ((dryrun)); then
+		echo "testmode: '$@'" && return
+	elif ! "$@"; then
+		echo "$1: failed" >&2; false; exit; fi
+}
+
 ##############################################################################
 
 installx ()
@@ -176,16 +188,12 @@ installx ()
 	if ((${#srcfiles[@]} == 0)); then
 		((quiet)) || echo "no files to copy, skipping"; return; fi
 
-	if ! cp \
+	cmd cp \
 		--archive \
 		--remove-destination \
 		"${srcfiles[@]}" \
-	       "$dst/"
-	then
-		echo "copy failed" >&2
-		false
-		exit
-	fi
+		"$dst/" \
+	;
 }
 
 installrc ()
