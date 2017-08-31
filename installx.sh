@@ -169,9 +169,7 @@ installx ()
 	local -a srcfiles=("${script_names[@]}" "${exelink_names[@]}")
 
 	if ((${#srcfiles[@]} == 0)); then
-		((quiet)) || echo "no files to copy, skipping"
-		return
-	fi
+		((quiet)) || echo "no files to copy, skipping"; return; fi
 
 	if ! cp \
 		--archive \
@@ -189,7 +187,7 @@ installrc ()
 {
 	find_into rclink "$links $dots -not $exes"
 
-	n=${#rclink_names[@]}
+	local n=${#rclink_names[@]}
 	for ((i = 0; i < n; i++)); do
 		name="${rclink_names[i]}"
 		ref="${rclink_refs[i]}"
