@@ -45,9 +45,7 @@ process_args ()
 	local yn
 	local -a opts
 	declare -g src dst
-
-	# default to interactive confirm after src/dst canonicalization
-	local ask=1
+	declare -g ask=1 # default if unforced confirm
 
 	eval set -- $(getopt -n $invname \
 	-o qfh -l quiet,forcehelp -- "$@")
