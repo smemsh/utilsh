@@ -73,12 +73,19 @@ process_args ()
 	# - last arg to single 'cp' if installing executables
 	# - dirname component of last arg to each 'ln' if installing rclinks
 	#
-	dst="${2:-${HOME:?}}"; dst="${dst%/}"
+	dst="${2:-${HOME:?}}"
+
+	# we're going to chdir, and we test -d later (but can be -L also)
+	# so we'll just follow it if it's a link, should have no effect
+	#
+	dst="${dst%/}"
+	src="${src%/}"
+
 	if [[ $invname == installx && ! $2 ]]; then
 		dst="$dst/bin"; fi
 
 	if ((ask)); then
-		read -n 1 -p "overwrite in $dst/ with $src/* (y/n)? " yn; echo
+		read -n 1 -p "overwrite in '$dst/' with '$src/'* (y/n)? " yn; echo
 		if [[ $yn != 'y' ]]; then
 			echo "aborting"; false; exit; fi
 	fi
