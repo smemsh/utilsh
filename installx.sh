@@ -49,31 +49,21 @@ process_args ()
 	# default to interactive confirm after src/dst canonicalization
 	local ask=1
 
-	if opts=($(
-		getopt \
-		-n $invname \
-		-o qfh \
-		-l quiet,force,help \
-		-- \
-		"$@" \
-	)); then
-		for arg in ${opts[@]}
-		do case $arg in
-		(-q|--quiet) quiet=1; shift;;
-		(-f|--force) ask=0; shift;;
-		(-h|--help) usagex;;
-		(--) shift; break;; # end of options
-		(*) usagex;;
-		esac; done
-	else
-		usagex
-	fi
-
-	if ((quiet && ask)); then
-		echo "quiet mode cannot be interactive" >&2; false; exit; fi
+	eval set -- $(getopt -n $invname \
+	-o qfh -l quiet,forcehelp -- "$@")
+	for arg; do case $arg in
+	(-q|--quiet) quiet=1; shift;;
+	(-f|--force) ask=0; shift;;
+	(-h|--help) usagex;;
+	(--) shift; break;;
+	(*) usagex;;
+	esac; done
 
 	if ! (($# == 0 || $# == 2)); then
 		usagex; fi
+
+	if ((quiet && ask)); then
+		echo "quiet mode cannot be interactive" >&2; false; exit; fi
 
 	# where to get the files, defaults to the invocation dir
 	#
@@ -187,7 +177,7 @@ installx ()
 		--archive \
 		--remove-destination \
 		"${srcfiles[@]}" \
-		"$dst/"
+	       "$dst/"
 	then
 		echo "copy failed" >&2
 		false
