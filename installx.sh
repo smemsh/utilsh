@@ -168,6 +168,13 @@ find_into ()
 	done < <(set -f; $findcmd)
 }
 
+# todo: not called yet, use it to replace 'ln -r' and to make a list ourselves
+pyrelpath ()
+{
+	#python -c 'import os, sys; print(os.path.relpath(*sys.argv[1:]))'
+	#python -c 'import os, sys; print(os.path.relpath(sys.argv[1]))'
+}
+
 cmd ()
 {
 	if ((dryrun)); then
