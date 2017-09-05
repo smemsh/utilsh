@@ -204,7 +204,7 @@ installrc ()
 	for ((i = 0; i < n; i++)); do
 		name="${rclink_names[i]}"
 		ref="${rclink_refs[i]}"
-		ln -rsf "$src/$ref" "$dst/$name"
+		cmd ln -rsf "$src/$ref" "$dst/$name"
 	done
 }
 
