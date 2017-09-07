@@ -212,6 +212,30 @@ installrc ()
 	for ((i = 0; i < n; i++)); do
 		name="${rclink_names[i]}"
 		ref="${rclink_refs[i]}"
+		
+		# bug with u14 vs u16 ln --relative, it does not work right on
+		# u14, but does if we remove the link first instead of just
+		# using --force flag, see for details:
+		# https://bugs.launchpad.net/ubuntu/+source/coreutils/+bug/1715753
+		#
+		# this is what we're seeing:
+		#   $ loop=0; nloops=4; base=/tmp/lntest; \
+		#     rm -rf $base/ && mkdir -p $base/dir && \
+		#     touch $base/dir/file &&
+		#     while ((loop++ < nloops)); do
+		#         ln -frs $base/dir/file $base/link
+		#         readlink -f $base/link
+		#         sleep 1
+		#     done
+		# /tmp/lntest/dir/file
+		# /tmp/lntest/file
+		# /tmp/lntest/dir/file
+		# /tmp/lntest/file
+		#
+		# removing it first fixes the issue on u14 but this will all be
+		# taken care of once we do this ourselves (see pyrelpath())
+		#
+		cmd rm -f "$dst/$name"
 		cmd ln -rsf "$src/$ref" "$dst/$name"
 	done
 }
