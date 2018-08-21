@@ -34,7 +34,8 @@ logprefix="$2"
 
 parse_args ()
 {
-	progname=$(readlink --silent --canonicalize --no-newline ${0##*/})
+	progname=$(readlink --silent --canonicalize --no-newline "$0")
+	progname=${progname##*/}
 
 	if (($# == 1)); then
 		logprefix=$startargv
