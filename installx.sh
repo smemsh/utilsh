@@ -50,7 +50,7 @@ process_args ()
 
 	eval set -- $(getopt -n $invname \
 	-o qfnh -l quiet,force,test,help -- "$@")
-	for arg; do case $arg in
+	while true; do case $1 in
 	(-n|--test) dryrun=1; shift;;
 	(-q|--quiet) quiet=1; shift;;
 	(-f|--force) ask=0; shift;;
