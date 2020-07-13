@@ -49,6 +49,10 @@ lsa ()
 
 # lsa just files
 #
+# lsf/lsd relies on -F being present in __ls() but there's no
+# obvious way to do it otherwise, since 'ls' itself doesn't
+# implement this, we'd have to reimplement 'ls'
+#
 lsf ()
 {
 	__ls -n "$@" |
@@ -61,7 +65,7 @@ lsf ()
 lsd ()
 {
 	__ls -n "$@" |
-	grep -B 0 '[^/]$' |
+	awk '/\/$/ {print; next}; {exit}' |
 	less -ERX -+S
 }
 
