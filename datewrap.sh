@@ -24,6 +24,7 @@ _thismonth () { date +$mflags; }
 _today     () { date +$dflags; }
 _now       () { date +$nflags; }
 
+_nextweek  () { date -d next-week +$wflags; }
 _lastweek  () { date -d last-week +$wflags; }
 _lastmonth () { date -d last-month +$mflags; }
 _yesterday () { date -d yesterday +$dflags; }
