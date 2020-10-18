@@ -18,6 +18,7 @@ invname=${0##*/}
 
 findbase="find -mindepth 1 -maxdepth 1"
 files="-type f"
+tdirs="-xtype d"
 links="-type l -not -lname */*"
 exes="-executable" # unlike -perm -01, uses referent if symlink
 dots="-name .*"
@@ -206,7 +207,7 @@ installx ()
 
 installrc ()
 {
-	find_into rclink "$links $dots -not $exes"
+	find_into rclink "$links $dots ( ( -not $exes ) -or $tdirs )"
 
 	local n=${#rclink_names[@]}
 	for ((i = 0; i < n; i++)); do
