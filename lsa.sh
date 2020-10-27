@@ -56,7 +56,7 @@ lsa ()
 lsf ()
 {
 	__ls -n "$@" |
-	grep -A 0 '[^/]$' |
+	grep '[^/]$' |
 	less -ERX -+S
 }
 
