@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+#
+# attributes
+# 0 normal
+# 1 bold
+# 3 italic
+# 4 underline
+# 5 blink
+# 7 reverse
+# 8 invisible
+#
+# fg bg color
+# 30 40 black
+# 31 41 red
+# 32 42 green
+# 33 43 yellow
+# 34 44 blue
+# 35 45 magenta
+# 36 46 cyan
+# 37 47 white
+#
+
+export LESS_TERMCAP_mb=$'\e[1;33m'      # blinking start (unused?)
+export LESS_TERMCAP_md=$'\e[0;33m'      # bold start (titles)
+export LESS_TERMCAP_us=$'\e[0;3;35m'    # underline start (emphasis)
+export LESS_TERMCAP_ue=$'\e[0m'         # underline end
+export LESS_TERMCAP_me=$'\e[0m'         # end all modes
+
+# status line
+#export LESS_TERMCAP_so=$'\e[01;33m'     # standout start
+#export LESS_TERMCAP_se=$'\e[0m'         # standout end
+
+manprog=$(type -aP man | grep -v $BASH_SOURCE)
+if (($(wc -l <<< "$manprog") != 1))
+then echo "more than one matching 'man' executable" >&2; false; exit; fi
+
+$manprog "$@"
