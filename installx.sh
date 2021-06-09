@@ -88,7 +88,7 @@ process_args ()
 		dst="$dst/bin"; fi
 
 	if ((ask)); then
-		read -n 1 -p "overwrite in '$dst/' with '$src/'* (y/n)? " yn; echo
+		read -n 1 -p "overwrite in '$dst/' with '$src/*' (y/n)? " yn; echo
 		if [[ $yn != 'y' ]]; then
 			echo "aborting"; false; exit; fi
 	fi
