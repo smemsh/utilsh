@@ -18,7 +18,7 @@ invname=${0##*/}
 
 findbase="find -mindepth 1 -maxdepth 1"
 files="-type f"
-tdirs="-xtype d"
+flinks="-xtype f"
 links="-type l -not -lname */*"
 exes="-executable" # unlike -perm -01, uses referent if symlink
 dots="-name .*"
@@ -190,7 +190,7 @@ cmd ()
 installx ()
 {
 	find_into script "$files $exes";
-	find_into exelink "$links $exes"
+	find_into exelink "$links $flinks $exes"
 
 	local -a srcfiles=("${script_names[@]}" "${exelink_names[@]}")
 
@@ -207,7 +207,7 @@ installx ()
 
 installrc ()
 {
-	find_into rclink "$links $dots ( ( -not $exes ) -or $tdirs )"
+	find_into rclink "$links $dots $flinks -not $exes"
 
 	local n=${#rclink_names[@]}
 	for ((i = 0; i < n; i++)); do
