@@ -123,7 +123,7 @@ print_execution_stats ()
 			printf 's'; fi
 	}
 
-	if [[ $src$dst =~ [^[:alnum:]_-/.+,:@] ]]
+	if [[ $src$dst =~ [^a-zA-Z0-9_/.+,:@-] ]]
 	then src="\"$src\"" dst="\"$dst\""; fi
 
 	echo "${dryrun:+testmode: }$src -> $dst"
