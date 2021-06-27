@@ -58,7 +58,7 @@ time_since_mod ()
 	test -f $lastmod || return
 
 	now=`date +%s`
-	lastmod=`stat --format=%Y $1`
+	lastmod=`stat --format=%Y $1` || exit
 
 	printf $((($now - $lastmod) / 60))
 }
@@ -90,7 +90,7 @@ parse_args ()
 main ()
 {
 	parse_args $@
-	modmins=`time_since_mod $refpath`
+	modmins=`time_since_mod $refpath` || exit
 
 	find ${searchroots[@]} \
 		\( -type f -or -type l \) \
