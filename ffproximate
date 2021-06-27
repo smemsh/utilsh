@@ -93,7 +93,7 @@ main ()
 	modmins=`time_since_mod $refpath`
 
 	find ${searchroots[@]} \
-		-type f \
+		\( -type f -or -type l \) \
 		-mmin -$((modmins + variance)) \
 		-mmin +$((modmins - variance)) \
 	;
