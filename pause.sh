@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # pause.sh: ppause, presume
-#   stops or starts entire process group of oldest proc named as given in arg1
+#   stops, starts, or terminates pgroup of oldest proc named as given in arg1
 #
 # scott@smemsh.net
 # http://smemsh.net/src/utilsh/
@@ -13,6 +13,7 @@ main ()
 {
 
 	case $(basename $0) in
+	(*term) signal="TERM";;
 	(*pause) signal="STOP";;
 	(*resume) signal="CONT";;
 	(*) echo "unimplemented"; false; exit;;
