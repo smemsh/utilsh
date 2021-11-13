@@ -6,8 +6,6 @@
 # scott@smemsh.net
 # http://smemsh.net/src/utilsh/
 # http://spdx.org/licenses/GPL-2.0
-#
-##############################################################################
 
 set -e
 
@@ -28,15 +26,6 @@ main ()
 	# cannot seem to combine :1 with pgid= in any way could find
 	#
 	pgid="$(ps --no-headers -o pgid:1 -p $pid)"
-
-	# or we could do this after -o pgid=, but we prefer explicit
-	# TODO: make bug, this is clearly a problem for script actions
-	#
-	#pgid=${pgid//\ /}
-
-	# or we could do this, but it's just ugly
-	#
-	#kill -$signal -`printf $pgid`
 
 	kill -$signal -$pgid
 }
