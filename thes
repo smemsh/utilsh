@@ -1,0 +1,13 @@
+#!/bin/bash
+#
+# first arg: word
+# second arg: number of cols in output, default four
+#
+
+dict -d moby-thesaurus "$1" |
+tail -n +6 |
+while read -a replies -d ,; do echo ${replies[@]}; done |
+sed /./\!d |
+shuf |
+pr -${2:-4}tw ${COLUMNS:-80} |
+less
