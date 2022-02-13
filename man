@@ -30,7 +30,9 @@ export LESS_TERMCAP_me=$'\e[0m'         # end all modes
 #export LESS_TERMCAP_so=$'\e[01;33m'     # standout start
 #export LESS_TERMCAP_se=$'\e[0m'         # standout end
 
-manprog=$(type -aP man | grep -v $BASH_SOURCE)
+# hardcode: /bin may be same inode if /bin -> /usr/bin is symlink
+manprog=/usr/bin/man
+
 if (($(wc -l <<< "$manprog") != 1))
 then echo "more than one matching 'man' executable" >&2; false; exit; fi
 
