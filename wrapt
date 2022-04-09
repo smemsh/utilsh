@@ -97,7 +97,7 @@ _url ()
 	; echo; done
 }
 
-__pkgsearch () { apt-cache search --names-only --full "^${1:?}"; }
+__pkgsearch () { apt-cache search --names-only --full "^${1:?}\$"; }
 
 # package owning given file paths
 # args: '-x' given path is a regex, not glob pattern
