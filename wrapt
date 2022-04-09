@@ -94,7 +94,7 @@ _url ()
 	do __pkgsearch "$pkg" \
 	| grep ^Homepage: \
 	| awk '{print $2}' \
-	; echo; done
+	; done
 }
 
 __pkgsearch () { apt-cache search --names-only --full "^${1:?}\$"; }
