@@ -40,7 +40,7 @@ function_exists ()
 
 # summary description field (first line)
 #
-_short () { aptitude search -F %p%d "$@"; }
+_short () { aptitude search --disable-columns -F "%p: %d" "$@"; }
 
 # long description field
 #
