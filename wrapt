@@ -74,7 +74,7 @@ _desc ()
 {
 	local pkg
 	for pkg
-	do __pkgsearch "%pkg" \
+	do __pkgsearch "$pkg" \
 	| grep -E \
 		-e ^Package: \
 		-e ^Description: \
