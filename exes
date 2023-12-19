@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+maxdepth="-maxdepth 1"
+if [[ "$1" == "-r" ]]; then unset maxdepth; shift; fi
+find "$@" $maxdepth -type f -executable -printf "%P\n"
