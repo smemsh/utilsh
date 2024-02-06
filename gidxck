@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+#
+# check if google has indexed a page
+# snarfed from https://gist.github.com/qsun/1654432#gistcomment-3473567
+
+agent="Chrome 10"
+query="https://webcache.googleusercontent.com/search?q=cache:"
+
+[[ $(curl -sw %{http_code} -o /dev/null -A "$agent" "${query}$1") == 200 ]]
