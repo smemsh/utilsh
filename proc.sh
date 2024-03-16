@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 #
 # proc.sh: psa, psf, procs
 #   select and display particular processes
