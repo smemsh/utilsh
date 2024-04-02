@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+#
+# findsymbol
+#   finds libraries that define a symbol
+#   looks in the standard system library search paths
+#
+# todo:
+#   look in other places, allow user to specify, getopt
+#
+# scott@smemsh.net
+# http://github.com/smemsh/src/utilsh/
+# http://spdx.org/licenses/GPL-2.0
+#
+
+declare -a flags=(--defined-only)
+
+if [[ $1 == --static ]]
+then namepat='*.a'
+elif [[ $1 == --shared ]]
+then namepat='*.so.*.*.*' flags+=(--dynamic)
+else echo "must give --static or --shared as \$1" >&2; false; exit
+fi
+
+shift
+
+symbol=${1:?}
+for dir in /usr/{local/,}lib
+do for file in `find $dir -type f -name "$namepat"`
+do nm ${flags[@]} $file 2>/dev/null |
+grep -q $symbol && echo $file
+done; done
