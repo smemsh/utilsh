@@ -22,6 +22,8 @@ psa ()
 	# TODO: use *TYPE variables provided by bash
 	if [[ $uname == 'Linux' ]]; then
 		if pids=`pgrep -f "$*" -d,`; then
+			# remove our own process
+			pids=$pids,; pids=${pids/$$,/}; pids=${pids%,}
 			ps -wwH \
 			-o pid,ppid,pgid,sid,pcpu,rss,vsz,tty,s,cmd \
 			-p $pids
