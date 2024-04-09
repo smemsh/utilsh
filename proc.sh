@@ -43,14 +43,15 @@ psf ()
 #
 procs ()
 {
-	ps -N --ppid=2 -o comm= |
-	sort -u | column | column -t
+	ps -N --ppid=2 -o comm= \
+	| sort -u \
+	| column -c 80
 }
 
 ##############################################################################
 
-invoke=${0##*/}
-if ! [[ `declare -F $invoke` ]]; then
+invname=${0##*/}
+if ! [[ `declare -F $invname` ]]; then
 	echo "unimplemented"; false; exit; fi
 
-$invoke "$@"
+$invname "$@"
