@@ -27,8 +27,8 @@ psa ()
 			-p $pids
 		fi
 		return
-	elif [[ $name == 'SunOS' ]]; then psargs=ef
-	elif [[ $name == 'Darwin' ]]; then psargs=efwwwwww
+	elif [[ $uname == 'SunOS' ]]; then psargs=ef
+	elif [[ $uname == 'Darwin' ]]; then psargs=efwwwwww
 	else echo "no code for you!"
 	fi
 
