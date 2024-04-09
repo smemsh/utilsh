@@ -22,7 +22,10 @@ psa ()
 	# TODO: use *TYPE variables provided by bash
 	if [[ $uname == 'Linux' ]]; then
 		if pids=`pgrep -f "$*" -d,`; then
-			ps -wwHo pid,ppid,pgid,sid,pcpu,rss,vsz,tty,s,cmd -p $pids; fi
+			ps -wwH \
+			-o pid,ppid,pgid,sid,pcpu,rss,vsz,tty,s,cmd \
+			-p $pids
+		fi
 		return
 	elif [[ $name == 'SunOS' ]]; then psargs=ef
 	elif [[ $name == 'Darwin' ]]; then psargs=efwwwwww
