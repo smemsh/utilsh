@@ -16,8 +16,6 @@ psa ()
 	local psargs grepargs
 	local pids
 
-	(($#)) && grepargs="[${1:0:1}]${1:1}" # TODO works? such old code!
-
 	local uname=`uname -s`
 	# TODO: use *TYPE variables provided by bash
 	if [[ $uname == 'Linux' ]]; then
@@ -34,7 +32,21 @@ psa ()
 	else echo "no code for you!"
 	fi
 
-	ps -$psargs | egrep "$grepargs"
+	# avoid our own process appearing: capture ps output first so the greps
+	# aren't therein, and try to remove our own process from the list, by
+	# escaping the expected ps line for ourself, which could have arbitrary
+	# patterns given as $1, so we escape all the chars and require it has
+	# our pid in a field of its own
+	#
+	# todo: tests well on linux, but need to try solaris and bsd, which is
+	# the only place it will ever actually run.  tried to avoid gnuisms...
+	#
+	grepout="$(ps -$psargs)"
+	sedcmds='s,[^^],[&],g; s,\^,\\^,g'
+	escprog="$(sed "$sedcmds" <<< "$0")"
+	escpat="$(sed "$sedcmds" <<< "$1")"
+	grep -E "$1" <<< "$grepout" \
+	| grep -vE "\\b$$\\b.*[[:space:]]$escprog[[:space:]]+$escpat\$"
 }
 
 # processes with a session leader matching specified name
