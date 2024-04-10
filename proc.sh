@@ -26,6 +26,7 @@ psa ()
 			then ps -wwH \
 				-o pid,ppid,pgid,sid,pcpu,rss,vsz,tty,s,cmd \
 				-p $pids
+			else false
 			fi
 		fi
 		return
