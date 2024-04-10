@@ -22,9 +22,11 @@ psa ()
 		if pids=`pgrep -f "$*" -d,`; then
 			# remove our own process
 			pids=$pids,; pids=${pids/$$,/}; pids=${pids%,}
-			ps -wwH \
-			-o pid,ppid,pgid,sid,pcpu,rss,vsz,tty,s,cmd \
-			-p $pids
+			if [[ $pids ]]
+			then ps -wwH \
+				-o pid,ppid,pgid,sid,pcpu,rss,vsz,tty,s,cmd \
+				-p $pids
+			fi
 		fi
 		return
 	elif [[ $uname == 'SunOS' ]]; then psargs=ef
