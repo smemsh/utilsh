@@ -109,6 +109,16 @@ sessions ()
 	| column -c 80
 }
 
+# tabular list of unique direct descendants of init
+#
+daemons ()
+{
+	ps --ppid=1 -o comm= \
+	| sort \
+	| uniq \
+	| column -c 80
+}
+
 ##############################################################################
 
 invname=${0##*/}
