@@ -94,7 +94,8 @@ psf ()
 procs ()
 {
 	ps -N --ppid=2 -o comm= \
-	| sort -u \
+	| sort \
+	| uniq \
 	| column -c 80
 }
 
