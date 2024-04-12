@@ -99,6 +99,16 @@ procs ()
 	| column -c 80
 }
 
+# tabular list of unique session leader names
+#
+sessions ()
+{
+	ps -Nd -o comm= \
+	| sort \
+	| uniq \
+	| column -c 80
+}
+
 ##############################################################################
 
 invname=${0##*/}
