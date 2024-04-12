@@ -89,35 +89,12 @@ psf ()
 	[[ $pids ]] && ps -jHF -p $pids
 }
 
-# tabular list of unique process names except kernel threads
+# tabular lists of unique process names matching eponymous criteria
 #
-procs ()
-{
-	ps -N --ppid=2 -o comm= \
-	| sort \
-	| uniq \
-	| column -c 80
-}
-
-# tabular list of unique session leader names
-#
-sessions ()
-{
-	ps -Nd -o comm= \
-	| sort \
-	| uniq \
-	| column -c 80
-}
-
-# tabular list of unique direct descendants of init
-#
-daemons ()
-{
-	ps --ppid=1 -o comm= \
-	| sort \
-	| uniq \
-	| column -c 80
-}
+mktable   () { sort | uniq | column -c 80;           }
+procs     () { ps -N --ppid=2 -o comm=    | mktable; }    # non-kernel procs
+daemons   () { ps --ppid=1 -o comm=       | mktable; }    # descendants of init
+sessions  () { ps -Nd -o comm=            | mktable; }    # session leaders
 
 ##############################################################################
 
