@@ -56,7 +56,37 @@ psa ()
 #
 psf ()
 {
-	ps -H --sid $(pgrep -d, $@) -F
+	local pids=$(ps -eo pid=,sid=,comm= \
+	| gawk -v leadername=${1:?} '
+	{
+		pid = $1
+		sid = $2
+		cmd = $3
+
+		pids[i] = pid
+		sids[i] = sid
+		cmds[i] = cmd
+
+		if (pid == sid) leaders[i] = 1
+		if (sid != 0 && leaders[i] && cmd == leadername)
+			target_sessions[sid] = 1
+		i++
+	}
+	END {
+		pidlen = length(pids)
+		for (i = 0; i < pidlen; i++) {
+			sid = sids[i]
+			if (target_sessions[sid] && !leaders[i])
+				matches[j++] = pids[i]
+		}
+		sidlist = matches[0]
+		matchlen = length(matches)
+		for (i = 1; i < matchlen; i++)
+			sidlist = sidlist "," matches[i]
+		printf("%s", sidlist)
+	}')
+
+	[[ $pids ]] && ps -jHF -p $pids
 }
 
 # tabular list of unique process names except kernel threads
