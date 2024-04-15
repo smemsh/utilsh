@@ -28,4 +28,5 @@ getyn ()
 	fi
 }
 
-getyn "$@"
+# let the script be either sourced or executed
+[[ ${BASH_SOURCE##*/} == ${0##*/} ]] && getyn "$@"
