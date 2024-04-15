@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+#
+# $1 -> 1 or 0 for default yes/no
+# $2 -> prompt string
+#
+# exits success for yes, failure for no
+
+declare -i default=${1:?}
+declare -i y n
+declare prompt="${2:?}"
+
+printf -v y "%d" "'y'"
+printf -v n "%d" "'n'"
+
+((default == 1)) && ((y -= 32)) || ((n -= 32))
+
+printf -v yn "\\x$(printf "%x" $y)/\\x$(printf "%x" $n)"
+
+read -s -n1 -p "$prompt ($yn)? " r
+
+if [[ ! $r ]]
+then (($default))
+elif [[ $r == y || $r == Y ]]; then true
+elif [[ $r == n || $r == N ]]; then false
+fi
