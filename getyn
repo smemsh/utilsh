@@ -19,6 +19,7 @@ getyn ()
 	printf -v yn "\\x$(printf "%x" $y)/\\x$(printf "%x" $n)"
 
 	read -s -n1 -p "$prompt ($yn)? " r
+	echo $r
 
 	if [[ ! $r ]]
 	then (($default))
