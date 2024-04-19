@@ -102,7 +102,7 @@ sessions  () { ps -Nd -o comm=            | mktable; }    # session leaders
 ##############################################################################
 
 invname=${0##*/}
-if ! [[ `declare -F $invname` ]]; then
-	echo "unimplemented"; false; exit; fi
+if ! [[ `declare -F $invname` ]]
+then echo "unimplemented" >&2; false; exit; fi
 
 $invname "$@"
