@@ -9,7 +9,7 @@
 #
 ##############################################################################
 
-# by name, or give full process table without arg
+# by pattern match in command line, or give full process table without arg
 #
 psa ()
 {
