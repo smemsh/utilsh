@@ -57,7 +57,7 @@ psa ()
 
 # processes with a session leader matching specified name
 #
-psf ()
+psl ()
 {
 	local pids=$(ps -eo pid=,sid=,comm= \
 	| gawk -v leadername=${1:?} '
