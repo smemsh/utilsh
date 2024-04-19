@@ -60,7 +60,7 @@ psa ()
 psl ()
 {
 	local pids=$(ps -eo pid=,sid=,comm= \
-	| gawk -v leadername=${1:?} '
+	| gawk -v leadername="${1:?}" '
 	{
 		pid = $1
 		sid = $2
