@@ -13,7 +13,7 @@
 #
 psa ()
 {
-	local psargs grepargs
+	local psargs
 	local pids
 
 	local uname=`uname -s`
@@ -47,11 +47,11 @@ psa ()
 	# todo: tests well on linux, but need to try solaris and bsd, which is
 	# the only place it will ever actually run.  tried to avoid gnuisms...
 	#
-	grepout="$(ps -$psargs)"
+	psout="$(ps -$psargs)"
 	sedcmds='s,[^^],[&],g; s,\^,\\^,g'
 	escprog="$(sed "$sedcmds" <<< "$0")"
 	escpat="$(sed "$sedcmds" <<< "$1")"
-	grep -E "$1" <<< "$grepout" \
+	grep -E "$1" <<< "$psout" \
 	| grep -vE "\\b$$\\b.*[[:space:]]$escprog[[:space:]]+$escpat\$"
 }
 
