@@ -70,7 +70,6 @@ psl ()
 
 		pids[i] = pid
 		sids[i] = sid
-		cmds[i] = cmd
 
 		if (pid == sid) leaders[i] = 1
 		if (sid != 0 && leaders[i] && cmd == leadername)
