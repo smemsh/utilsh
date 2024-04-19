@@ -18,7 +18,8 @@ psa ()
 
 	local uname=`uname -s`
 	# TODO: use *TYPE variables provided by bash
-	if [[ $uname == 'Linux' ]]; then
+	if [[ $uname == 'Linux' ]]
+	then
 		if pids=`pgrep -f "$*" -d,`; then
 			# remove our own process
 			pids=$pids,; pids=${pids/$$,/}; pids=${pids%,}
@@ -29,7 +30,9 @@ psa ()
 			else false
 			fi
 		fi
-		return
+
+		return # end Linux
+
 	elif [[ $uname == 'SunOS' ]]; then psargs=ef
 	elif [[ $uname == 'Darwin' ]]; then psargs=efwwwwww
 	else echo "no code for you!"
