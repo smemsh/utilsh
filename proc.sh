@@ -21,6 +21,7 @@ psa ()
 	if [[ $uname == 'Linux' ]]
 	then
 		(($# == 0)) && set -- ^
+		(($# > 1)) && bomb "only one pattern for pgrep"
 		if pids=`pgrep -f "$*" -d,`; then
 			# remove our own process
 			pids=$pids,; pids=${pids/$$,/}; pids=${pids%,}
