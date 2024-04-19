@@ -64,13 +64,8 @@ psl ()
 	local pids=$(ps -eo pid=,sid=,comm= \
 	| gawk -v leadername="${1:?}" '
 	{
-		pid = $1
-		sid = $2
-		cmd = $3
-
-		pids[i] = pid
-		sids[i] = sid
-
+		pid = $1; sid = $2; cmd = $3
+		pids[i] = pid; sids[i] = sid
 		if (pid == sid) leaders[i] = 1
 		if (sid != 0 && leaders[i] && cmd == leadername)
 			target_sessions[sid] = 1
