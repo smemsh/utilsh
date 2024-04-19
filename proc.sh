@@ -93,6 +93,7 @@ psl ()
 mktable   () { sort | uniq | column -c 80;           }
 procs     () { ps -N --ppid=2 -o comm=    | mktable; }    # non-kernel procs
 daemons   () { ps --ppid=1 -o comm=       | mktable; }    # descendants of init
+kthreads  () { ps --ppid=2 -o comm=       | mktable; }    # kernel threads
 sessions  () { ps -Nd -o comm=            | mktable; }    # session leaders
 
 ##############################################################################
