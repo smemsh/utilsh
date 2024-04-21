@@ -95,6 +95,12 @@ psl ()
 	[[ $pids ]] && ps $psflags -p $pids
 }
 
+pspg ()
+{
+	local pidlist=$(IFS=,; pgrep --pgroup "${*:?}")
+	[[ $pidlist ]] && ps $psflags -p $pidlist
+}
+
 # tabular lists of unique process names matching eponymous criteria
 
 mktable   () { sort | uniq | column -c 80; }
