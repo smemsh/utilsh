@@ -9,17 +9,24 @@
 #
 ##############################################################################
 
-psfields=(
-	pid ppid pgid sid
-	pcpu
-	rss vsz tty
-	s
-	cmd
-)
-IFS=,
-psflags="-wwH --no-headers -o ${psfields[*]}"
-IFS=
-cmdflags="-o comm="
+if [[ $1 == -p ]]
+then
+	psflags="-o pid="
+	cmdflags="$psflags"
+	shift
+else
+	psfields=(
+		pid ppid pgid sid
+		pcpu
+		rss vsz tty
+		s
+		cmd
+	)
+	IFS=,
+	psflags="-wwH --no-headers -o ${psfields[*]}"
+	unset IFS
+	cmdflags="-o comm="
+fi
 
 # by pattern match in command line, or give full process table without arg
 #
