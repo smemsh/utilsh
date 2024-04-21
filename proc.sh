@@ -61,11 +61,10 @@ psa ()
 	then
 		(($# == 0)) && set -- ^
 		(($# > 1)) && bomb "only one pattern for pgrep"
-		if pids=`pgrep -f "$*" -d,`; then
-			# remove our own process
-			pids=$pids,; pids=${pids/$$,/}; pids=${pids%,}
-			[[ $pids ]] && ps $psflags -p $pids || false
-		fi
+		matches=$(pgrep -d, -f "$1")
+		pids=$(ps -p $matches -o $gawk_psfmt \
+		| gawk -v exclpg=$$ -v exclk=1 "$gawk_filter_print")
+		[[ $pids ]] && ps $psflags -p $pids || false
 
 		return # end Linux
 
