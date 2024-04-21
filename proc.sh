@@ -95,6 +95,40 @@ psl ()
 	[[ $pids ]] && ps $psflags -p $pids
 }
 
+# children of given parent(s), recursively
+# -p display pids only, which will not include parent
+#
+psf ()
+{
+	local pids=$(ps -eo pid=,ppid= \
+	| gawk -v ourpid=$$ -v pidlist="$*" '
+	BEGIN {
+		split(pidlist, arglist, "([[:space:]]+|,)")
+		for (arg in arglist) args[arglist[arg]]++
+	}
+	function \
+	recurse(pids)
+	{
+		for (pid in pids) {
+			if (pid == ourpid) continue
+			results[pid]++
+			if (length(children[pid])) recurse(children[pid])
+		}
+	}
+	{
+		pid = $1; ppid = $2
+		children[ppid][pid]++
+	}
+	END {
+		recurse(args)
+		$0 = ""; n = 1; OFS=","
+		for (pid in results) $(n++) = pid
+		print
+	}')
+
+	[[ $pids ]] && ps $psflags -p $pids
+}
+
 pspg ()
 {
 	local pidlist=$(IFS=,; pgrep --pgroup "${*:?}")
