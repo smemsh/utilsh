@@ -158,6 +158,7 @@ ps_noself_select ()
 }
 pst  () { ps_noself_select tty "$@"; }
 pss  () { ps_noself_select sid "$@"; }
+pspp () { ps_noself_select ppid "$@"; }
 
 # tabular lists of unique process names matching eponymous criteria
 
