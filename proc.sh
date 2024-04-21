@@ -162,12 +162,14 @@ ps_noself_select ()
 {
 	local optname=${1:?}; shift
 	local pids=$(ps --$optname "$*" -o $gawk_psfmt \
-	| gawk -v exclpg=$$ -v exclk=$exclk "$gawk_filter_print")
+	| gawk -v exclpg=${exclpg:-$$} -v exclk=$exclk "$gawk_filter_print")
 	[[ $pids ]] && ps $psflags -p $pids
 }
 pst  () { ps_noself_select tty "$@"; }
 pss  () { ps_noself_select sid "$@"; }
 pspp () { ps_noself_select ppid "$@"; }
+psp  () { exclpg=0 \
+	  ps_noself_select pid "$@"; }
 
 # tabular lists of unique process names matching eponymous criteria
 
