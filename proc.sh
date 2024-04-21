@@ -179,6 +179,9 @@ kthreads  () { ps --ppid=2 ${cmdflags}    | mktable; }    # kernel threads
 sessions  () { ps -Nd ${cmdflags}         | mktable; }    # session leaders
 leaders   () { leaders "$@"; }                            # sessions alias
 
+headless  () { psflags="$cmdflags" exclk=1 \
+               ps_noself_select tty -     | mktable; }    # no ctty, non-kernel
+
 ##############################################################################
 
 invname=${0##*/}
