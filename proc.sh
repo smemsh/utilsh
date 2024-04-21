@@ -157,6 +157,7 @@ ps_noself_select ()
 	[[ $pids ]] && ps $psflags -p $pids
 }
 pst  () { ps_noself_select tty "$@"; }
+pss  () { ps_noself_select sid "$@"; }
 
 # tabular lists of unique process names matching eponymous criteria
 
