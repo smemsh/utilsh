@@ -28,6 +28,26 @@ else
 	cmdflags="-o comm="
 fi
 
+gawk_psfmt="pid=,pgid=,ppid="
+gawk_filter='
+{
+	pid = $1; pgid = $2; ppid = $3
+	if (exclpg && pgid == exclpg) next
+	if (ppid == 2 && exclk) next
+	results[pid]++
+}'
+gawk_end_print='
+END {
+	if (recursive) recurse(args)
+	$0 = ""; n = 1; OFS=","
+	for (pid in results) $(n++) = pid
+	print
+}'
+gawk_filter_print="
+$gawk_filter
+$gawk_end_print
+"
+
 # by pattern match in command line, or give full process table without arg
 #
 psa ()
@@ -108,7 +128,7 @@ psl ()
 psf ()
 {
 	local pids=$(ps -eo pid=,ppid= \
-	| gawk -v ourpid=$$ -v pidlist="$*" '
+	| gawk -v ourpid=$$ -v recursive=1 -v pidlist="$*" '
 	BEGIN {
 		split(pidlist, arglist, "([[:space:]]+|,)")
 		for (arg in arglist) args[arglist[arg]]++
@@ -125,13 +145,7 @@ psf ()
 	{
 		pid = $1; ppid = $2
 		children[ppid][pid]++
-	}
-	END {
-		recurse(args)
-		$0 = ""; n = 1; OFS=","
-		for (pid in results) $(n++) = pid
-		print
-	}')
+	}'"$gawk_end_print")
 
 	[[ $pids ]] && ps $psflags -p $pids
 }
@@ -148,20 +162,8 @@ pspg ()
 ps_noself_select ()
 {
 	local optname=${1:?}; shift
-	local pids=$(ps --$optname "$*" -o pid=,pgid=,ppid= \
-	| gawk -v exclpg=$$ -v exclk=$exclk'
-	{
-		pid = $1; pgid = $2; ppid = $3
-		if (pgid == exclpg) next
-		if (ppid == 2 && exclk) next
-		results[pid]++
-	}
-	END {
-		$0 = ""; n = 1; OFS=","
-		for (pid in results) $(n++) = pid
-		print
-	}')
-
+	local pids=$(ps --$optname "$*" -o $gawk_psfmt \
+	| gawk -v exclpg=$$ -v exclk=$exclk "$gawk_filter_print")
 	[[ $pids ]] && ps $psflags -p $pids
 }
 pst  () { ps_noself_select tty "$@"; }
