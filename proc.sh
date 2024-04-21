@@ -9,6 +9,18 @@
 #
 ##############################################################################
 
+psfields=(
+	pid ppid pgid sid
+	pcpu
+	rss vsz tty
+	s
+	cmd
+)
+IFS=,
+psflags="-wwH --no-headers -o ${psfields[*]}"
+IFS=
+cmdflags="-o comm="
+
 # by pattern match in command line, or give full process table without arg
 #
 psa ()
@@ -25,12 +37,7 @@ psa ()
 		if pids=`pgrep -f "$*" -d,`; then
 			# remove our own process
 			pids=$pids,; pids=${pids/$$,/}; pids=${pids%,}
-			if [[ $pids ]]
-			then ps -wwH \
-				-o pid,ppid,pgid,sid,pcpu,rss,vsz,tty,s,cmd \
-				-p $pids
-			else false
-			fi
+			[[ $pids ]] && ps $psflags -p $pids || false
 		fi
 
 		return # end Linux
@@ -85,16 +92,16 @@ psl ()
 		printf("%s", sidlist)
 	}')
 
-	[[ $pids ]] && ps -jHF -p $pids
+	[[ $pids ]] && ps $psflags -p $pids
 }
 
 # tabular lists of unique process names matching eponymous criteria
 #
 mktable   () { sort | uniq | column -c 80;           }
-procs     () { ps -N --ppid=2 -o comm=    | mktable; }    # non-kernel procs
-daemons   () { ps --ppid=1 -o comm=       | mktable; }    # descendants of init
-kthreads  () { ps --ppid=2 -o comm=       | mktable; }    # kernel threads
-sessions  () { ps -Nd -o comm=            | mktable; }    # session leaders
+procs     () { ps -N --ppid=2 ${cmdflags} | mktable; }    # non-kernel procs
+daemons   () { ps --ppid=1 ${cmdflags}    | mktable; }    # descendants of init
+kthreads  () { ps --ppid=2 ${cmdflags}    | mktable; }    # kernel threads
+sessions  () { ps -Nd ${cmdflags}         | mktable; }    # session leaders
 
 ##############################################################################
 
