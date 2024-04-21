@@ -96,8 +96,9 @@ psl ()
 }
 
 # tabular lists of unique process names matching eponymous criteria
-#
-mktable   () { sort | uniq | column -c 80;           }
+
+mktable   () { sort | uniq | column -c 80; }
+
 procs     () { ps -N --ppid=2 ${cmdflags} | mktable; }    # non-kernel procs
 daemons   () { ps --ppid=1 ${cmdflags}    | mktable; }    # descendants of init
 kthreads  () { ps --ppid=2 ${cmdflags}    | mktable; }    # kernel threads
