@@ -135,6 +135,28 @@ pspg ()
 	[[ $pidlist ]] && ps $psflags -p $pidlist
 }
 
+# we commonly want to remove processes with our own pgid from the list,
+# but otherwise use just one selector option that takes a list
+#
+ps_noself_select ()
+{
+	local optname=${1:?}; shift
+	local pids=$(ps --$optname "$*" -o pid=,pgid= \
+	| gawk -v exclpg=$$ '
+	{
+		pid = $1; pgid = $2
+		if (pgid == exclpg) next
+		results[pid]++
+	}
+	END {
+		$0 = ""; n = 1; OFS=","
+		for (pid in results) $(n++) = pid
+		print
+	}')
+
+	[[ $pids ]] && ps $psflags -p $pids
+}
+
 # tabular lists of unique process names matching eponymous criteria
 
 mktable   () { sort | uniq | column -c 80; }
