@@ -148,11 +148,12 @@ pspg ()
 ps_noself_select ()
 {
 	local optname=${1:?}; shift
-	local pids=$(ps --$optname "$*" -o pid=,pgid= \
-	| gawk -v exclpg=$$ '
+	local pids=$(ps --$optname "$*" -o pid=,pgid=,ppid= \
+	| gawk -v exclpg=$$ -v exclk=$exclk'
 	{
-		pid = $1; pgid = $2
+		pid = $1; pgid = $2; ppid = $3
 		if (pgid == exclpg) next
+		if (ppid == 2 && exclk) next
 		results[pid]++
 	}
 	END {
