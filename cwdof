@@ -1,0 +1,6 @@
+#!/bin/sh
+
+for pid; do
+	cmd="readlink -f /proc/$pid/cwd"
+	$cmd || $cmd -v
+done
