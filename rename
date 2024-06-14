@@ -46,5 +46,7 @@ do
 	elif [[ $from == '' || $append ]]; then newname="$file$to"
 	else newname="${file/$from/$to}"
 	fi
-	mv "$file" "$newname"
+
+	if ! mv "$file" "$newname"
+	then echo "failed to mv '$file' '$newname'"; false; fi
 done
