@@ -34,7 +34,11 @@ elif [[ $prepend ]]; then :
 else from="$1"; to="$2"; shift 2
 fi
 
-for file; do
+for file
+do
+	if [[ $file == '.' || $file == '..' ]]
+	then echo "skipping '$file'" >&2; continue; fi
+
 	if [[ $prepend ]]; then newname="$prepend$file"
 	elif [[ $from == '' || $append ]]; then newname="$file$to"
 	else newname="${file/$from/$to}"
