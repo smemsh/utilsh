@@ -16,7 +16,11 @@ eval set -- $(getopt -n "${0##*/}" \
 while true; do case $1 in
 (-p|--prepend) prepend="$2"; shift 2;;
 (-a|--append) append="$2"; shift 2;;
-(-h|--help) echo "read script for usage" >&2; false; exit;;
+(-h|--help) cat <<-%
+	-p/--prepend <string to add to beginning>
+	-a/--append <string to add to end>
+	%
+	echo "read script for more usage" >&2; false; exit;;
 (--) shift; break;;
 (*) echo "impossible condition" >&2; false; exit;;
 esac; done
