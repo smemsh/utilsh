@@ -39,6 +39,9 @@ do
 	if [[ $file == '.' || $file == '..' ]]
 	then echo "skipping '$file'" >&2; continue; fi
 
+	if [[ $file =~ '/' ]]
+	then echo "skipping path '$file'" >&2; continue; fi
+
 	if [[ $prepend ]]; then newname="$prepend$file"
 	elif [[ $from == '' || $append ]]; then newname="$file$to"
 	else newname="${file/$from/$to}"
