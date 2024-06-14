@@ -9,7 +9,10 @@
 # cf https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=982944
 #
 
-eval set -- $(getopt -n "${0##*/}" -o hp:a: -l help,prepend:,append: -- "$@")
+eval set -- $(getopt -n "${0##*/}" \
+-o hp:a: \
+-l help,prepend:,append: \
+-- "$@")
 while true; do case $1 in
 (-p|--prepend) prepend="$2"; shift 2;;
 (-a|--append) append="$2"; shift 2;;
