@@ -252,7 +252,7 @@ main ()
 
 	if [[ $(declare -F $invname) ]]
 	then $invname "$@"
-	else echo "unimplemented command '$1'" >&2; fi
+	else echo "unimplemented command '$invname'" >&2; fi
 
 	if ((! quiet)); then
 		print_execution_stats; fi
