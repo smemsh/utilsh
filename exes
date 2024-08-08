@@ -29,6 +29,12 @@ maxdepth="-maxdepth 1"
 if [[ "$1" == "-r" ]]; then unset maxdepth; shift; fi
 (($#)) || set -- .
 
+if [[ $invname != exes ]]
+then
+	which file &>/dev/null || exit 10
+	file --help |& grep -q mime.type || exit 20
+fi
+
 for dirarg
 do
 	if ! test -d "$dirarg"
