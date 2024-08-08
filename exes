@@ -1,4 +1,28 @@
 #!/usr/bin/env bash
+#
+# exes, scripts, pyscripts, shscripts
+#   output list of all executables, or any or particular language scripts
+#
+# desc:
+#   - if args given, uses those directories instead of current directory
+#
+# invocations:
+#   - exes: outputs list of executables in the current directory
+#   - bins: only non-text executables
+#   - scripts: only scripts, as determined by file magic
+#   - pyscripts: only python scripts
+#   - shscripts: only shell or bash scripts
+#
+# bugs:
+#   - accommodates filenames with newlines, but delimits output with them
+#   - probably directories with newlines given as arguments would break
+#   - bash behavior for readarray with null delimiter might change
+#     - '-t' not needed for nulls, needed for newlines; inconsistent
+#
+# scott@smemsh.net
+# https://github.com/smemsh/utilsh/
+# https://spdx.org/licenses/GPL-2.0
+#
 
 invname=${0##*/}
 maxdepth="-maxdepth 1"
