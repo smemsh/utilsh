@@ -1,5 +1,60 @@
 #!/usr/bin/env bash
 
+invname=${0##*/}
 maxdepth="-maxdepth 1"
 if [[ "$1" == "-r" ]]; then unset maxdepth; shift; fi
-find "$@" $maxdepth -type f -executable -printf "%P\n"
+(($#)) || set -- .
+
+for dirarg
+do
+	if ! test -d "$dirarg"
+	then echo "$dirarg: not a directory" >&2; false; continue; fi
+
+	[[ $dirarg =~ / ]] && printarg=%p || printarg=%P
+
+	readarray -d '' files < <(
+		find "$dirarg" \
+		$maxdepth \
+		-type f \
+		-executable \
+		-printf "$printarg"'\0' \
+		;
+	)
+	if [[ $invname == exes ]]
+	then for ((i = 0; i < ${#files[@]}; i++))
+	do printf "%s\n" "${files[i]}"; done; continue; fi
+
+	readarray -d '' scanned < <(
+		file \
+		--raw \
+		--mime-type \
+		--print0 \
+		--print0 \
+		"${files[@]}" \
+		;
+	)
+	if ((${#scanned[@]} % 2 != 0))
+	then echo "$dirarg: scanned magics uneven"; false; exit; fi
+
+	declare -a pyscripts=() shscripts=() scripts=() bins=()
+	for ((i = 0; i < ${#scanned[@]};))
+	do
+		entry="${scanned[i++]}"
+		magic="${scanned[i++]}"
+		exes+=("$entry")
+		if [[ $magic == text/* ]]; then
+			scripts+=("$entry")
+			if [[ $magic == text/x-script.python ]]
+			then pyscripts+=("$entry")
+			elif [[ $magic == text/x-shellscript ]]
+			then shscripts+=("$entry")
+			fi
+		else
+			bins+=("$entry")
+		fi
+	done
+
+	declare -n array=$invname
+	for ((i = 0; i < ${#array[@]}; i++))
+	do printf "%s\n" "${array[i]}"; done
+done
