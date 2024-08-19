@@ -91,6 +91,7 @@ main ()
 	LANG=$LANG \
 	${startargv[@]} |&
 	logger -t "$logprefix" \
+	&>/dev/null \
 	& disown $!
 }
 
