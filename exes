@@ -40,7 +40,7 @@ do
 	if ! test -d "$dirarg"
 	then echo "$dirarg: not a directory" >&2; false; continue; fi
 
-	[[ $dirarg =~ / ]] && printarg=%p || printarg=%P
+	[[ $dirarg != . ]] && printarg=%p || printarg=%P
 
 	readarray -d '' files < <(
 		find "$dirarg" \
