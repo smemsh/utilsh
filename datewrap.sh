@@ -7,7 +7,7 @@
 #   convenience date wrappers
 #
 # scott@smemsh.net
-# http://smemsh.net/src/utilsh/
+# https://github.com/smemsh/utilsh/
 # http://spdx.org/licenses/GPL-2.0
 #
 ##############################################################################
