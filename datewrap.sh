@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 #
 # datewrap.sh
-#   now, today, yesterday, tomorrow, thisweek, lastweek, thismonth, lastmonth
+#   now, today, yesterday, tomorrow, lastweek, nextweek, lastmonth, thisweek,
+#   thismonth, thisyear
 #
 # desc:
 #   convenience date wrappers
