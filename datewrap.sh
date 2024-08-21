@@ -14,6 +14,7 @@
 
 invname=${0##*/}
 
+yflags=%Y
 mflags=%Y%m
 dflags=%Y%m%d
 wflags=%G%V
@@ -21,6 +22,7 @@ nflags=%Y%m%d%H%M%S
 
 _thisweek  () { date +$wflags; }
 _thismonth () { date +$mflags; }
+_thisyear  () { date +$yflags; }
 _today     () { date +$dflags; }
 _now       () { date +$nflags; }
 
