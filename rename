@@ -1,12 +1,21 @@
 #!/usr/bin/env bash
 #
-# debian removed rename.ul from its util-linux installation, so we have to
-# write our own, sadly.  while we're at it, we add a couple options to make it
-# easier to to prepend or append something without needing empty string
-# argument (which only works to append), although we still take that to keep
-# the interface
+# rename
+#   rename.ul replacement with different/better options
 #
-# cf https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=982944
+# desc
+#   debian removed rename.ul from its util-linux installation, so we have to
+#   write our own.  while we're at it, we add a couple options to make
+#   it easier to to prepend or append something without needing empty string
+#   argument (which only works to append), although we still take one to allow
+#   the interface to be used the same way
+#
+# ref
+#   https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=982944
+#
+# scott@smemsh.net
+# https://github.com/smemsh/utilsh/
+# https://spdx.org/licenses/GPL-2.0
 #
 
 eval set -- $(getopt -n "${0##*/}" \
