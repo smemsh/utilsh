@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 
+invname=${0##*/}
+[[ $invname == vimver ]] && set -- echo v:versionlong
 vim -nm --not-a-term -u NONE --cmd "$*" --cmd quit </dev/null
