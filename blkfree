@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+#
+# blkfree
+#   show mountpoint and free megabytes of files/dirs from $@
+#
+# scott@smemsh.net
+# https://github.com/smemsh/utilsh/
+# https://spdx.org/licenses/GPL-2.0
+#
+
+for arg; do
+read mntpnt diskfree < <(findmnt -nbT $arg -o target,avail)
+echo $mntpnt $((diskfree >> 20))
+done
