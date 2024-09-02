@@ -8,7 +8,12 @@
 # https://spdx.org/licenses/GPL-2.0
 #
 
+bydf () { df -B1 $1 | tail -n +2 | awk '{print $4, $NF}'; }
+byfindmnt () { findmnt -nbT $1 -o target,avail; }
+findmnt --help |& grep -qw -- --bytes && cmd=byfindmnt || cmd=bydf
+
 for arg; do
-read mntpnt diskfree < <(findmnt -nbT $arg -o target,avail)
-echo $mntpnt $((diskfree >> 20))
+read diskfree mntpt < <($cmd $arg)
+declare -p diskfree mntpt
+echo $mntpt $((diskfree >> 20))
 done
