@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 
 invname=${0##*/}
-[[ $invname == vimver ]] && set -- echo v:versionlong
+[[ $invname == vimver ]] && let ++vercmd
+
+((vercmd)) && set -- echon v:versionlong
+
 vim -u NONE -e \
 --cmd 'redir! > /dev/stdout' \
 --cmd "$*" \
 --cmd quit \
 -s \
 </dev/null
+
+((vercmd)) && tty -s && echo || true
