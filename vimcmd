@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+vim -nm --not-a-term -u NONE --cmd "$*" --cmd quit </dev/null
