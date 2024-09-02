@@ -9,7 +9,7 @@
 #
 
 bydf () { df -B1 $1 | tail -n +2 | awk '{print $4, $NF}'; }
-byfindmnt () { findmnt -nbT $1 -o target,avail; }
+byfindmnt () { findmnt -nbT $1 -o avail,target; }
 findmnt --help |& grep -qw -- --bytes && cmd=byfindmnt || cmd=bydf
 
 for arg; do
