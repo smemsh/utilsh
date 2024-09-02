@@ -14,6 +14,5 @@ findmnt --help |& grep -qw -- --bytes && cmd=byfindmnt || cmd=bydf
 
 for arg; do
 read diskfree mntpt < <($cmd $arg)
-declare -p diskfree mntpt
 echo $mntpt $((diskfree >> 20))
 done
