@@ -41,16 +41,17 @@ do
 	then echo "$dirarg: not a directory" >&2; false; continue; fi
 
 	[[ $dirarg != . ]] && printarg=%p || printarg=%P
+	[[ $invname != files ]] && typearg=-executable
 
 	readarray -d '' files < <(
 		find "$dirarg" \
 		$maxdepth \
 		-type f \
-		-executable \
+		$typearg \
 		-printf "$printarg"'\0' \
 		;
 	)
-	if [[ $invname == exes ]]
+	if [[ $invname == exes || $invname == files ]]
 	then for ((i = 0; i < ${#files[@]}; i++))
 	do printf "%s\n" "${files[i]}"; done; continue; fi
 
