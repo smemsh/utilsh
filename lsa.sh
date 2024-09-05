@@ -32,7 +32,7 @@ __ls ()
 		--color=always \
 		--time-style=+$HISTTIMEFORMAT \
 		${_BASHRC_HAS_LS_DIRSFIRST:+'--group-directories-first'} \
-		"$@" |
+		"$@" |&
 	sed '/^total/d'
 }
 
