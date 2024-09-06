@@ -31,3 +31,5 @@ for dir in $(
 	[[ $ispublic == 'true' ]] &&
 		echo "$basedir"
 done
+
+true
