@@ -25,7 +25,9 @@ for dir in $(
 	-type d \
 	-name '.git' \
 ); do
-	ispublic=$(git -C $dir config --get --bool $pubattr)
+	basedir=${dir%.git}
+	basedir=${basedir%/}
+	ispublic=$(git -C $basedir config --get --bool $pubattr)
 	[[ $ispublic == 'true' ]] &&
-		echo "$dir"
+		echo "$basedir"
 done
