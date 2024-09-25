@@ -30,7 +30,7 @@ tmuxpid ()
 
 main ()
 {
-	local invname=${0:##*/}
+	local invname=${0##*/}
 
 	if ! [[ `declare -F $invname` ]]
 	then echo "unimplemented invocation: '$invname'"; exit 10;
