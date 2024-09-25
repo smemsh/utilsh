@@ -12,9 +12,6 @@
 #
 ##############################################################################
 
-source ~/lib/sh/include
-require get_invocation_name
-
 tmuxtty ()
 {
 	local target=$(
@@ -33,7 +30,7 @@ tmuxpid ()
 
 main ()
 {
-	local invname=`get_invocation_name`
+	local invname=${0:##*/}
 
 	if ! [[ `declare -F $invname` ]]
 	then echo "unimplemented invocation: '$invname'"; exit 10;
