@@ -62,6 +62,7 @@ psa ()
 		(($# == 0)) && set -- ^
 		(($# > 1)) && bomb "only one pattern for pgrep"
 		matches=$(pgrep -d, -f "$1")
+		[[ $matches ]] || exit
 		pids=$(ps -p $matches -o $gawk_psfmt \
 		| gawk -v exclpg=$$ -v exclk=1 "$gawk_filter_print")
 		[[ $pids ]] && ps $psflags -p $pids || false
