@@ -43,7 +43,7 @@ do
 	[[ $dirarg != . ]] && printarg=%p || printarg=%P
 	[[ $invname != files ]] && typearg=-executable
 
-	readarray -d '' files < <(
+	readarray -d '' entries < <(
 		find "$dirarg" \
 		$maxdepth \
 		-type f \
@@ -51,9 +51,10 @@ do
 		-printf "$printarg"'\0' \
 		;
 	)
+
 	if [[ $invname == exes || $invname == files ]]
-	then for ((i = 0; i < ${#files[@]}; i++))
-	do printf "%s\n" "${files[i]}"; done; continue; fi
+	then for ((i = 0; i < ${#entries[@]}; i++))
+	do printf "%s\n" "${entries[i]}"; done; continue; fi
 
 	readarray -d '' scanned < <(
 		file \
@@ -61,7 +62,7 @@ do
 		--mime-type \
 		--print0 \
 		--print0 \
-		"${files[@]}" \
+		"${entries[@]}" \
 		;
 	)
 	if ((${#scanned[@]} % 2 != 0))
