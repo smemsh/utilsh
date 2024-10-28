@@ -5,6 +5,8 @@
 #
 # desc:
 #   - if args given, uses those directories instead of current directory
+#   - if args given are files, will end up "filtering"
+#       - todo: inefficient, calls 'find' on each one of them
 #
 # invocations:
 #   - exes: outputs list of executables in the current directory
@@ -35,26 +37,22 @@ then
 	file --help |& grep -q mime.type || exit 20
 fi
 
-for dirarg
+for arg
 do
-	if ! test -d "$dirarg"
-	then echo "$dirarg: not a directory" >&2; false; continue; fi
-
-	[[ $dirarg != . ]] && printarg=%p || printarg=%P
+	[[ $arg != . ]] && printarg=%p || printarg=%P
 	[[ $invname != files ]] && typearg=-executable
 
-	readarray -d '' entries < <(
-		find "$dirarg" \
+	readarray -d '' files < <(
+		find "$arg" \
 		$maxdepth \
 		-type f \
 		$typearg \
 		-printf "$printarg"'\0' \
 		;
 	)
-
 	if [[ $invname == exes || $invname == files ]]
-	then for ((i = 0; i < ${#entries[@]}; i++))
-	do printf "%s\n" "${entries[i]}"; done; continue; fi
+	then for ((i = 0; i < ${#files[@]}; i++))
+	do printf "%s\n" "${files[i]}"; done; continue; fi
 
 	readarray -d '' scanned < <(
 		file \
@@ -62,11 +60,11 @@ do
 		--mime-type \
 		--print0 \
 		--print0 \
-		"${entries[@]}" \
+		"${files[@]}" \
 		;
 	)
 	if ((${#scanned[@]} % 2 != 0))
-	then echo "$dirarg: scanned magics uneven"; false; exit; fi
+	then echo "$arg: scanned magics uneven"; false; exit; fi
 
 	declare -a pyscripts=() shscripts=() scripts=() bins=()
 	for ((i = 0; i < ${#scanned[@]};))
