@@ -16,7 +16,7 @@
 #   - we tack on a newline at end; perhaps only if stdout isatty?
 #
 # scott@smemsh.net
-# http://smemsh.net/src/utilsh/
+# https://github.com/smemsh/utilsh/
 # http://spdx.org/licenses/GPL-2.0
 #
 ##############################################################################

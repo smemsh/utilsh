@@ -8,7 +8,7 @@
 #     "gawk -f" but on osx we do not have gawk installed in the same
 #     location (ie it's from macports)
 #
-# http://smemsh.net/src/utilsh/
+# https://github.com/smemsh/utilsh/
 # http://spdx.org/licenses/GPL-2.0
 # scott@smemsh.net
 #

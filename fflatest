@@ -9,7 +9,7 @@
 #   - flags to print the name, the date, or both
 #   - handle other kinds of inodes besides regular files
 #
-# http://smemsh.net/src/utilsh/
+# https://github.com/smemsh/utilsh/
 # http://spdx.org/licenses/GPL-2.0
 # scott@smemsh.net
 #

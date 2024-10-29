@@ -4,7 +4,7 @@
 #   stops, starts, or terminates pgroup of oldest proc named as given in arg1
 #
 # scott@smemsh.net
-# http://smemsh.net/src/utilsh/
+# https://github.com/smemsh/utilsh/
 # http://spdx.org/licenses/GPL-2.0
 
 set -e

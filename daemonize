@@ -20,7 +20,7 @@
 # todo
 #   - code to close fds exists, but commented out, need to test
 #
-# http://smemsh.net/src/utilsh/
+# https://github.com/smemsh/utilsh/
 # http://spdx.org/licenses/GPL-2.0
 # scott@smemsh.net
 #
