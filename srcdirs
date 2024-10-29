@@ -3,6 +3,9 @@
 # srcdirs
 #   all git repos in $1 with config attribute $2 == 'true' printed
 #
+# dirties
+#   outputs all srcdirs that have any 'modified' statuses
+#
 # note:
 #   - does not handle spaces in repo paths (and newline is OFS)
 #   - works only with non-bare repositories
@@ -14,6 +17,10 @@
 # https://spdx.org/licenses/GPL-2.0
 #
 ##############################################################################
+
+if [[ ${0##*/} == dirties ]]
+then for dir in `srcdirs`
+do git -C $dir diff --quiet || echo $dir; done; exit; fi
 
 basedir=${1:-~/src}
 pubattr=${2:-'srcdirs.ispublic'}
