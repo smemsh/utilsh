@@ -15,11 +15,7 @@
 #   - argN: [treeN] ...
 #   - if only one arg, use $default_variance and file's parent
 #
-# deps:
-#   - http://smemsh.net/src/libsh/ (for 'include' and 'require')
-#
 # todo:
-#   - use libsh rc to add proper options
 #   - allow ctime in addition to mtime
 #   - handle case of filenames starting with '-'
 #
@@ -48,10 +44,6 @@ usage_exit ()
 	exit
 }
 
-# this is snarfed from our libsh because we don't want any
-# external dependencies in utilsh (and, it might be the only
-# user, but that should be verified)
-#
 time_since_mod ()
 {
 	local now lastmod
