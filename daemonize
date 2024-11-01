@@ -13,10 +13,6 @@
 #   - arg2: prefix to use (less colons) in syslog messages
 #   - (if one arg supplied, log prefix will be invocation name)
 #
-# stat
-#   - used by author to start things
-#   - please notify author if using
-#
 # todo
 #   - code to close fds exists, but commented out, need to test
 #
