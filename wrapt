@@ -1,11 +1,7 @@
 #!/bin/bash
 #
 # wrapt
-#   apt, dpkg convenience wrapper
-#
-# stat:
-#   - mostly incomplete
-#   - please notify author if using
+#   apt, dpkg convenience wrapper, mostly incomplete
 #
 # also:
 #   - dctrl-tools
