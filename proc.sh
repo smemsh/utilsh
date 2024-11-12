@@ -189,7 +189,9 @@ headless  () { psflags="$cmdflags" exclk=1 \
 ##############################################################################
 
 invname=${0##*/}
-if ! [[ `declare -F $invname` ]]
+if [[ $invname == psfields ]]
+then echo ${psfields[@]}; exit
+elif ! [[ `declare -F $invname` ]]
 then echo "unimplemented" >&2; false; exit; fi
 
 $invname "$@"
