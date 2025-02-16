@@ -58,6 +58,7 @@ do
 		file \
 		--raw \
 		--mime-type \
+		--keep-going \
 		--print0 \
 		--print0 \
 		"${files[@]}" \
@@ -66,12 +67,19 @@ do
 	if ((${#scanned[@]} % 2 != 0))
 	then echo "$arg: scanned magics uneven"; false; exit; fi
 
-	declare -a pyscripts=() shscripts=() scripts=() bins=()
+	declare -a pyscripts=() shscripts=() scripts=() bins=() matches=()
 	for ((i = 0; i < ${#scanned[@]};))
 	do
 		entry="${scanned[i++]}"
-		magic="${scanned[i++]}"
 		exes+=("$entry")
+
+		# $ file --raw -k --mime-type --print0 --print0 flake8 | oda
+		#  f   l   a   k   e   8 nul  nl   -  sp   t   e   x   t   /   x
+		#  -   s   c   r   i   p   t   .   p   y   t   h   o   n nul
+		#
+		matches=(${scanned[i++]})
+		magic="${matches[@]:(-1)}"
+
 		if [[ $magic == text/* ]]; then
 			scripts+=("$entry")
 			if [[ $magic == text/x-script.python ]]
