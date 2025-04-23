@@ -27,6 +27,8 @@ invocation_name=${0##*/}
 
 __ls ()
 {
+	local r
+
 	ls \
 		-hAF \
 		--color=always \
@@ -34,6 +36,9 @@ __ls ()
 		${_BASHRC_HAS_LS_DIRSFIRST:+'--group-directories-first'} \
 		"$@" |&
 	sed '/^total/d'
+
+	r=$?
+	((r)) && return $r || return ${PIPESTATUS[0]}
 }
 
 # not used yet
@@ -43,8 +48,13 @@ __ls ()
 #
 lsa ()
 {
+	local r
+
 	__ls -n "$@" |
 	less -ERX -+S
+
+	r=$?
+	((r)) && return $r || return ${PIPESTATUS[0]}
 }
 
 # lsa just files
@@ -55,26 +65,41 @@ lsa ()
 #
 lsf ()
 {
+	local r
+
 	__ls -n "$@" |
 	grep '[^/]$' |
 	less -ERX -+S
+
+	r=$?
+	((r)) && return $r || return ${PIPESTATUS[0]}
 }
 
 # lsa just dirs
 #
 lsd ()
 {
+	local r
+
 	__ls -n "$@" |
 	awk '/\/$/ {print; next}; {exit}' |
 	less -ERX -+S
+
+	r=$?
+	((r)) && return $r || return ${PIPESTATUS[0]}
 }
 
 # lsa but wide
 #
 lw ()
 {
+	local r
+
 	__ls "$@" |
 	less -ERX -+S
+
+	r=$?
+	((r)) && return $r || return ${PIPESTATUS[0]}
 }
 
 # lists [files only] by time ...
@@ -84,6 +109,8 @@ lst  () { lstc $FUNCNAME "$@"; }
 lsc  () { lstc $FUNCNAME "$@"; }
 lstc ()
 {
+	local r
+
 	invocation_name=$1; shift
 
 	ls -1Flt --color=never --time-style=+$HISTTIMEFORMAT "$@" |
@@ -100,40 +127,68 @@ lstc ()
 	sort -sk 2 | # get rid of same filename after strip
 	uniq -f 1 | # dot and up to ':' only
 	sort -nrk 1,2 # sort results by date
+
+	r=$?
+	((r)) && return $r || return ${PIPESTATUS[0]}
 }
 
 
 # all, long, unsorted, page
 lsu ()
 {
+	local r
+
 	ls -lAF --color=always --time-style=+$HISTTIMEFORMAT "$@" |
 	less -ER
+
+	r=$?
+	((r)) && return $r || return ${PIPESTATUS[0]}
 }
 
 # lsa, wide, no dotfiles, useful in a home dir
 lsh ()
 {
+	local r
+
 	ls -CFw $COLUMNS --color=always "$@" |
 	less -ERX
+
+	r=$?
+	((r)) && return $r || return ${PIPESTATUS[0]}
 }
 
 # lsa wide nopage; lsr instead of lsw for faster typing
 lsr ()
 {
+	local r
+
 	ls -CAF --color=always "$@" |
 	less -ER
+
+	r=$?
+	((r)) && return $r || return ${PIPESTATUS[0]}
 }
 
 llatest ()
 {
+	local r
+
 	ls -1t ${@} |
 	head -1
+
+	r=$?
+	((r)) && return $r || return ${PIPESTATUS[0]}
 }
 
 loldest ()
 {
+	local r
+
 	ls -1t ${@} |
 	tail -1
+
+	r=$?
+	((r)) && return $r || return ${PIPESTATUS[0]}
 }
 
 $invocation_name "$@"
