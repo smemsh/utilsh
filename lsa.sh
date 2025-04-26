@@ -27,7 +27,7 @@ invocation_name=${0##*/}
 
 __ls ()
 {
-	local r
+	local r p
 
 	ls \
 		-hAF \
@@ -37,8 +37,8 @@ __ls ()
 		"$@" |&
 	sed '/^total/d'
 
-	r=$?
-	((r)) && return $r || return ${PIPESTATUS[0]}
+	r=$? p=${PIPESTATUS[0]}
+	((r)) && return $r || return $p
 }
 
 # not used yet
@@ -48,13 +48,13 @@ __ls ()
 #
 lsa ()
 {
-	local r
+	local r p
 
 	__ls -n "$@" |
 	less -ERX -+S
 
-	r=$?
-	((r)) && return $r || return ${PIPESTATUS[0]}
+	r=$? p=${PIPESTATUS[0]}
+	((r)) && return $r || return $p
 }
 
 # lsa just files
@@ -65,41 +65,41 @@ lsa ()
 #
 lsf ()
 {
-	local r
+	local r p
 
 	__ls -n "$@" |
 	grep '[^/]$' |
 	less -ERX -+S
 
-	r=$?
-	((r)) && return $r || return ${PIPESTATUS[0]}
+	r=$? p=${PIPESTATUS[0]}
+	((r)) && return $r || return $p
 }
 
 # lsa just dirs
 #
 lsd ()
 {
-	local r
+	local r p
 
 	__ls -n "$@" |
 	awk '/\/$/ {print; next}; {exit}' |
 	less -ERX -+S
 
-	r=$?
-	((r)) && return $r || return ${PIPESTATUS[0]}
+	r=$? p=${PIPESTATUS[0]}
+	((r)) && return $r || return $p
 }
 
 # lsa but wide
 #
 lw ()
 {
-	local r
+	local r p
 
 	__ls "$@" |
 	less -ERX -+S
 
-	r=$?
-	((r)) && return $r || return ${PIPESTATUS[0]}
+	r=$? p=${PIPESTATUS[0]}
+	((r)) && return $r || return $p
 }
 
 # lists [files only] by time ...
@@ -109,7 +109,7 @@ lst  () { lstc $FUNCNAME "$@"; }
 lsc  () { lstc $FUNCNAME "$@"; }
 lstc ()
 {
-	local r
+	local r p
 
 	invocation_name=$1; shift
 
@@ -128,67 +128,67 @@ lstc ()
 	uniq -f 1 | # dot and up to ':' only
 	sort -nrk 1,2 # sort results by date
 
-	r=$?
-	((r)) && return $r || return ${PIPESTATUS[0]}
+	r=$? p=${PIPESTATUS[0]}
+	((r)) && return $r || return $p
 }
 
 
 # all, long, unsorted, page
 lsu ()
 {
-	local r
+	local r p
 
 	ls -lAF --color=always --time-style=+$HISTTIMEFORMAT "$@" |
 	less -ER
 
-	r=$?
-	((r)) && return $r || return ${PIPESTATUS[0]}
+	r=$? p=${PIPESTATUS[0]}
+	((r)) && return $r || return $p
 }
 
 # lsa, wide, no dotfiles, useful in a home dir
 lsh ()
 {
-	local r
+	local r p
 
 	ls -CFw $COLUMNS --color=always "$@" |
 	less -ERX
 
-	r=$?
-	((r)) && return $r || return ${PIPESTATUS[0]}
+	r=$? p=${PIPESTATUS[0]}
+	((r)) && return $r || return $p
 }
 
 # lsa wide nopage; lsr instead of lsw for faster typing
 lsr ()
 {
-	local r
+	local r p
 
 	ls -CAF --color=always "$@" |
 	less -ER
 
-	r=$?
-	((r)) && return $r || return ${PIPESTATUS[0]}
+	r=$? p=${PIPESTATUS[0]}
+	((r)) && return $r || return $p
 }
 
 llatest ()
 {
-	local r
+	local r p
 
 	ls -1t ${@} |
 	head -1
 
-	r=$?
-	((r)) && return $r || return ${PIPESTATUS[0]}
+	r=$? p=${PIPESTATUS[0]}
+	((r)) && return $r || return $p
 }
 
 loldest ()
 {
-	local r
+	local r p
 
 	ls -1t ${@} |
 	tail -1
 
-	r=$?
-	((r)) && return $r || return ${PIPESTATUS[0]}
+	r=$? p=${PIPESTATUS[0]}
+	((r)) && return $r || return $p
 }
 
 $invocation_name "$@"
