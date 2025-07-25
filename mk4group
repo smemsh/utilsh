@@ -67,7 +67,7 @@ main ()
 		path=$(readlink -e "$dir")
 
 		test -d "$path" ||
-			bomb "path '$path' dne"
+			bomb "path '$path' dne or not directory"
 
 		test -w "$path" ||
 			bomb "path '$path' not writable"
