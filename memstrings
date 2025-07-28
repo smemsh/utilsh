@@ -7,7 +7,8 @@
 #   memstrings <pid>
 #
 # desc:
-#   reads /proc/pid/maps to determine heap mapping, and reads only that
+#   - reads /proc/pid/maps to determine heap mapping, and reads only that
+#   - pipe result to strings
 #
 # scott@smemsh.net
 # https://github.com/smemsh/utilsh/
