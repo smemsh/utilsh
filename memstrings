@@ -15,8 +15,8 @@
 # https://spdx.org/licenses/GPL-2.0
 #
 
-usage_until=desc
-usage_exit () { usage; exit; }
+usage_until=desc:
+usagex () { usage; false; exit; }
 usage ()
 {
 	grep -B 999 -m 1 '^$' "$BASH_SOURCE"  | # until first blank
@@ -28,16 +28,16 @@ usage ()
 
 process_args ()
 {
-	# 1/2
-	eval set -- $(getopt -n "${0##*/}" \
-		-o abcd -l opta,optb,optc,optd,help -- "$@")
-	# 2/2
+	eval set -- $(getopt -n $invname -o h -l help -- "$@")
 	while true; do case $1 in
-	(-h|--help) usagex;;
+	(-h|--help) usage; exit;;
 	(--) shift; break;;
-	(*) echo "bad usage" >&2; false; return;;
+	(*) usagex
 	esac; done
 
+	[[ $1 =~ ^[[:digit:]]+$ ]] || usagex
+
+	args=("$@")
 }
 
 check_sanity ()
@@ -77,11 +77,11 @@ main ()
 	check_sanity || exit
 
 	if [[ $(declare -F $invname) ]]
-	then $invname "$@"
+	then $invname "${args[@]}"
 	else echo "unimplemented command '$invname'" >&2; fi
 }
 
-invname=${0##*/}
+invname=${0##*/} # 0.8.0
 invdir=${0%/*}
 
 main "$@"
