@@ -15,13 +15,6 @@
 # https://spdx.org/licenses/GPL-2.0
 #
 
-setenv  () { local v=$1; shift; IFS= eval $v="\$*"; }
-setarr  () { local v=$1; shift; eval $v=\(\"\$@\"\); }
-bomb    () { echo "${FUNCNAME[1]}: ${*}, aborting" >&2; false; exit; }
-
-flag    () { (((opts & $1) == $1)); }
-flagstr () { flag $1 && printf true || printf false; }
-
 usage_until=desc
 usage_exit () { usage; exit; }
 usage ()
@@ -35,42 +28,16 @@ usage ()
 
 process_args ()
 {
-	local n
-	opta=false
-	optb=$((1<<n++))
-	optc=$((1<<n++))
-	optd=$((1<<n++))
-
-	# 1/3 if using usagex()
-	usagex () { for line in "${use[@]}"; do echo "$line"; done >&2; exit; }
-	use=(
-	"-a|--opta    description of opta option"
-	"-a|--optb    description of optb option"
-	"-a|--optc    description of optc option"
-	"-a|--optd    description of optd option"
-	"-h|--help    display help"
-	)
-
 	# 1/2
 	eval set -- $(getopt -n "${0##*/}" \
 		-o abcd -l opta,optb,optc,optd,help -- "$@")
 	# 2/2
 	while true; do case $1 in
-	(-a|--opta) opta=true; shift;;
-	(-b|--optb) let "opts |= $optb"; shift;;
-	(-c|--optc) let "opts |= $optc"; shift;;
-	(-d|--optd) let "opts |= $optd"; shift;;
 	(-h|--help) usagex;;
-	(-H|--HELP) usage_exit;;
 	(--) shift; break;;
 	(*) echo "bad usage" >&2; false; return;;
 	esac; done
 
-	if ! (((opts & (opts - 1)) == 0))
-	then echo "options [bcd] exclude each other" >&2; false; return; fi
-
-	if ! ((opts)) # default
-	then opts=$optb; fi
 }
 
 check_sanity ()
@@ -108,14 +75,12 @@ main ()
 {
 	process_args "$@" || exit
 	check_sanity || exit
-	cd "$startdir" || exit
 
 	if [[ $(declare -F $invname) ]]
 	then $invname "$@"
 	else echo "unimplemented command '$invname'" >&2; fi
 }
 
-startdir=$HOME
 invname=${0##*/}
 invdir=${0%/*}
 
