@@ -63,6 +63,12 @@ memstrings ()
 	break; fi; done \
 	< $mapfile
 
+	# status=none because in skip() it checks fstat() st.st_size()
+	# which is zero, it's warning that it cannot seek to that offset
+	# in a zero-byte file.  nonetheless the seek does happen, as
+	# confirmed by strace.  since we use minimum page size, it
+	# should always be an exact count with no leftover.
+	#
 	dd \
 		if=$memfile bs=4k \
 		skip=$((rstart)) iflag=skip_bytes \
