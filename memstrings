@@ -74,7 +74,7 @@ memstrings ()
 		skip=$((rstart)) iflag=skip_bytes \
 		count=$((rend - rstart)) iflag=count_bytes \
 		status=none \
-	| strings -Ul
+	| strings
 }
 
 main ()
