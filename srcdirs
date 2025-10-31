@@ -18,12 +18,14 @@
 #
 ##############################################################################
 
-if [[ ${0##*/} == dirties ]]
+invname=${0##*/}
+basedir=${1:-~/src}
+pubattr=${2:-'srcdirs.ispublic'}
+
+if [[ $invname == dirties ]]
 then for dir in `srcdirs`
 do git -C $dir diff --quiet || echo $dir; done; exit; fi
 
-basedir=${1:-~/src}
-pubattr=${2:-'srcdirs.ispublic'}
 
 for dir in $(
 	find $basedir/ \
