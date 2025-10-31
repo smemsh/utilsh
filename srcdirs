@@ -22,7 +22,7 @@ invname=${0##*/}
 basedir=${1:-~/src}
 pubattr=${2:-'srcdirs.ispublic'}
 
-if [[ $invname == dirties ]]
+if [[ $invname == srcmods ]]
 then for dir in `srcdirs`
 do git -C $dir diff --quiet || echo $dir; done; exit; fi
 
