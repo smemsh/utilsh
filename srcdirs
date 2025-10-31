@@ -26,6 +26,10 @@ if [[ $invname == srcmods ]]
 then for dir in `srcdirs`
 do git -C $dir diff --quiet || echo $dir; done; exit; fi
 
+if [[ $invname == srcvers ]]
+then for dir in `srcdirs`
+do printf "%s: %s\n" $dir $(git -C $dir describe 2>/dev/null || echo -)
+done | column -t | sort -Vk 1; exit; fi
 
 for dir in $(
 	find $basedir/ \
