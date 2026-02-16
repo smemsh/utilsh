@@ -1,7 +1,7 @@
 utilsh
 ==============================================================================
 
-collection of shell utilities, written in bash.
+Collection of shell utilities, written in bash.
 
 (once they become large or more useful, they will probably get moved to
 their own repositories)
@@ -21,7 +21,7 @@ exes
 ------------------------------------------------------------------------------
 
 | **exes**, **files**, **bins**, **scripts**, **pyscripts**, **shscripts**
-| output list of all executables, or any or particular language scripts
+| output list of all executables, or any particular language scripts
 
 exes is for doing things like::
 
