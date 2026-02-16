@@ -6,7 +6,7 @@ Collection of shell utilities, written in bash.
 (once they become large or more useful, they will probably get moved to
 their own repositories)
 
-| scott@smemsh.net
+| Scott Mcdermott <scott@smemsh.net>
 | https://github.com/smemsh/utilsh/
 | https://spdx.org/licenses/GPL-2.0
 
