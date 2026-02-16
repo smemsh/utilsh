@@ -176,16 +176,6 @@ pterm   send SIGTERM instead
 ======= =====================================================================
 
 
-urlcode
-------------------------------------------------------------------------------
-
-command line encode/decode of urls to clean http refs.  implemented in
-``urlcode.sh``.  Requires php be installed for ``rawurlencode()`` and
-``rawurldecode()``.  Todo: python.
-
-| **urlencode**: takes text on stdin and writes to stdout urlencoded
-| **urldecode**: does the reverse
-
 
 vimcmd
 ------------------------------------------------------------------------------
