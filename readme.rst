@@ -17,7 +17,7 @@ ____
 ____
 
 
-exes
+exes_
 ------------------------------------------------------------------------------
 
 | **exes**, **files**, **bins**, **scripts**, **pyscripts**, **shscripts**
@@ -58,8 +58,10 @@ bugs
 
   - '-t' not needed for nulls, needed for newlines; inconsistent
 
+.. _exes: https://github.com/smemsh/utilsh/blob/master/exes
 
-proc
+
+proc_
 ------------------------------------------------------------------------------
 
 select and display particular processes.
@@ -91,8 +93,10 @@ pss         select by session id
 pst         select by tty
 =========== ==================================================================
 
+.. _proc: https://github.com/smemsh/utilpy/blob/master/proc
 
-datewrap
+
+datewrap_
 ------------------------------------------------------------------------------
 
 convenience date wrappers, implemented in ``datewrap.sh``::
@@ -108,8 +112,10 @@ convenience date wrappers, implemented in ``datewrap.sh``::
   lastmonth
   thisyear
 
+.. _datewrap: https://github.com/smemsh/utilpy/blob/master/datewrap
 
-tmuxtty
+
+tmuxtty_
 ------------------------------------------------------------------------------
 
 | tmuxtty.sh: tmuxtty, tmuxpid
@@ -127,8 +133,10 @@ Either of these will require appropriate privileges to do everything.
 In most cases that's just your user but sometimes switching to
 privileged windows doesn't work without sudo.
 
+.. _tmuxtty: https://github.com/smemsh/utilpy/blob/master/tmuxtty
 
-srcdirs
+
+srcdirs_
 ------------------------------------------------------------------------------
 
 :srcdirs:
@@ -141,8 +149,10 @@ srcdirs
 - does not handle spaces in repo paths (and newline is OFS)
 - works only with non-bare repositories
 
+.. _srcdirs: https://github.com/smemsh/utilpy/blob/master/srcdirs
 
-lsa
+
+lsa_
 ------------------------------------------------------------------------------
 
 Shell wrappers for listing files and directories (in ``lsa.sh``).  For
@@ -163,8 +173,10 @@ llatest     show the latest file
 loldest     show the oldest file
 =========== ==================================================================
 
+.. _lsa: https://github.com/smemsh/utilpy/blob/master/lsa
 
-pause
+
+pause_
 ------------------------------------------------------------------------------
 
 send signals to groups of processes.  implemented in ``pause.sh``
@@ -176,8 +188,10 @@ pterm   send SIGTERM instead
 ======= =====================================================================
 
 
+.. _pause: https://github.com/smemsh/utilpy/blob/master/pause
 
-vimcmd
+
+vimcmd_
 ------------------------------------------------------------------------------
 
 **vimcmd**: execute given vim commands with its ``--cmd`` after
@@ -188,20 +202,26 @@ stdout.
 
 ==============================================================================
 
+.. _vimcmd: https://github.com/smemsh/utilpy/blob/master/vimcmd
 
-birth
+
+birth_
 ------------------------------------------------------------------------------
 
 display file creation dates
 
+.. _birth: https://github.com/smemsh/utilpy/blob/master/birth
 
-blkfree
+
+blkfree_
 ------------------------------------------------------------------------------
 
 show mountpoint and free megabytes of files/dirs from $@
 
+.. _blkfree: https://github.com/smemsh/utilpy/blob/master/blkfree
 
-cmpfuncs
+
+cmpfuncs_
 ------------------------------------------------------------------------------
 
 - compares all functions that exist in both source files $1 and $2
@@ -212,19 +232,26 @@ cmpfuncs
 - functions must end on a line with trailing brace in column 0
 - only tested with C files
 
-columnate
+.. _cmpfuncs: https://github.com/smemsh/utilpy/blob/master/cmpfuncs
+
+
+columnate_
 ------------------------------------------------------------------------------
 
 break input into columns by width of its longest word, fill to $COLUMNS
 
+.. _columnate: https://github.com/smemsh/utilpy/blob/master/columnate
 
-cwdof
+
+cwdof_
 ------------------------------------------------------------------------------
 
 get the cwd of the given pids
 
+.. _cwdof: https://github.com/smemsh/utilpy/blob/master/cwdof
 
-daemonize
+
+daemonize_
 ------------------------------------------------------------------------------
 
 initialize environment, fork/exec, setsid/disown, stdout/err to syslog
@@ -239,8 +266,10 @@ args:
 - *arg2*: prefix to use (less colons) in syslog messages
 - (if one arg supplied, log prefix will be invocation name)
 
+.. _daemonize: https://github.com/smemsh/utilpy/blob/master/daemonize
 
-fflatest
+
+fflatest_
 ------------------------------------------------------------------------------
 
 find latest regular file in dirtree by mtime, print parsable mtime stdout
@@ -252,8 +281,10 @@ todo:
 - flags to print the name, the date, or both
 - handle other kinds of inodes besides regular files
 
+.. _fflatest: https://github.com/smemsh/utilpy/blob/master/fflatest
 
-ffproximate
+
+ffproximate_
 ------------------------------------------------------------------------------
 
 find files in temporal proximity.
@@ -276,8 +307,10 @@ todo:
 - allow ctime in addition to mtime
 - handle case of filenames starting with '-'
 
+.. _ffproximate: https://github.com/smemsh/utilpy/blob/master/ffproximate
 
-findsymbol
+
+findsymbol_
 ------------------------------------------------------------------------------
 
 | finds libraries that define a symbol.
@@ -285,8 +318,10 @@ findsymbol
 
 todo: look in other places, allow user to specify, getopt
 
+.. _findsymbol: https://github.com/smemsh/utilpy/blob/master/findsymbol
 
-getyn
+
+getyn_
 ------------------------------------------------------------------------------
 
 gets a yes or no from the user:
@@ -296,14 +331,18 @@ gets a yes or no from the user:
 
 exits success for yes, failure for no
 
+.. _getyn: https://github.com/smemsh/utilpy/blob/master/getyn
 
-gidxck
+
+gidxck_
 ------------------------------------------------------------------------------
 
 checks if google has indexed the given page
 
+.. _gidxck: https://github.com/smemsh/utilpy/blob/master/gidxck
 
-greenv
+
+greenv_
 ------------------------------------------------------------------------------
 
 start program as user with green environment (clean but sane)
@@ -336,15 +375,19 @@ todo:
 - does not handle spaces in any of the exports
 - embeds call to sudo -- NOT GOOD, was whole point of runuser
 
+.. _greenv: https://github.com/smemsh/utilpy/blob/master/greenv
 
-man
+
+man_
 ------------------------------------------------------------------------------
 
 sets up some LESS term overrides so display is better, and then executes
 ``/usr/bin/man``
 
+.. _man: https://github.com/smemsh/utilpy/blob/master/man
 
-markless
+
+markless_
 ------------------------------------------------------------------------------
 
 converts markdown file to roff macros, typesets for term and pages
@@ -363,8 +406,10 @@ todo:
 - does not handle spaces
 - barfs if one of the filename variants does not exist
 
+.. _markless: https://github.com/smemsh/utilpy/blob/master/markless
 
-memstrings
+
+memstrings_
 ------------------------------------------------------------------------------
 
 dump contents of heap memory and filter through ``strings``.  reads
@@ -372,8 +417,10 @@ dump contents of heap memory and filter through ``strings``.  reads
 
 | usage: ``memstrings <pid>``
 
+.. _memstrings: https://github.com/smemsh/utilpy/blob/master/memstrings
 
-mk4group
+
+mk4group_
 ------------------------------------------------------------------------------
 
 recursively makes dirs group-owned, setgid, and copies user mode to group
@@ -383,14 +430,19 @@ args:
 - system group to chgrp given as $1
 - all remaining args: trees to be recursively converted
 
-nocomments
+.. _mk4group: https://github.com/smemsh/utilpy/blob/master/mk4group
+
+
+nocomments_
 ------------------------------------------------------------------------------
 
 by either stdin or the given files, remove their comments and emit on
 stdout.  knows only very simple comments like hashmarks.
 
+.. _nocomments: https://github.com/smemsh/utilpy/blob/master/nocomments
 
-rename
+
+rename_
 ------------------------------------------------------------------------------
 
 ``rename.ul`` replacement with different/better options::
@@ -410,8 +462,10 @@ allow the interface to be used the same way
 
 see also https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=982944
 
+.. _rename: https://github.com/smemsh/utilpy/blob/master/rename
 
-thes
+
+thes_
 ------------------------------------------------------------------------------
 
 display thesaurus entries using ``dict -d moby-thesaurus``
@@ -419,8 +473,10 @@ display thesaurus entries using ``dict -d moby-thesaurus``
 | *first arg*: word
 | *second arg*: number of cols in output, default four
 
+.. _thes: https://github.com/smemsh/utilpy/blob/master/thes
 
-wrapt
+
+wrapt_
 ------------------------------------------------------------------------------
 
 apt, dpkg convenience wrapper
@@ -440,13 +496,17 @@ todo:
 - verify names in "also"
 - does not handle spaces in package names or other input, as usual
 
+.. _wrapt: https://github.com/smemsh/utilpy/blob/master/wrapt
 
-trunc
+
+trunc_
 ------------------------------------------------------------------------------
 
 wraps coreutils 'truncate', making all args zero bytes
 
 args: any options and files to give to 'truncate'
+
+.. _trunc: https://github.com/smemsh/utilpy/blob/master/trunc
 
 
 uplink
@@ -455,3 +515,5 @@ uplink
 checks if there's is a network uplink, i.e. ICMP route to Google DNS.
 optionally retries at 1 minute intervals until the ``-w`` wait time has
 elapsed.
+
+.. _uplink: https://github.com/smemsh/utilpy/blob/master/uplink
