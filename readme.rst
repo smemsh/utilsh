@@ -447,3 +447,11 @@ trunc
 wraps coreutils 'truncate', making all args zero bytes
 
 args: any options and files to give to 'truncate'
+
+
+uplink
+------------------------------------------------------------------------------
+
+checks if there's is a network uplink, i.e. ICMP route to Google DNS.
+optionally retries at 1 minute intervals until the ``-w`` wait time has
+elapsed.

@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+#
+# uplink
+#   test icmp roundtrip to gdns, exit nonzero if down, -wN retry for N secs
+#
+# Scott Mcdermott <scott@smemsh.net>
+# https://github.com/smemsh/utilsh/
+# https://spdx.org/licenses/GPL-2.0
+
+err  () { echo "${FUNCNAME[1]}: ${*}" >&2; }
+bomb () { echo "${FUNCNAME[1]}: ${*}, aborting" >&2; false; exit; }
+
+usage  () { grep ^'#.*roundtrip' $BASH_SOURCE | sed -r s,^$'#\x20'+,,; }
+usagex () { usage; false; exit; }
+
+# if wait requested, wait this long when net down before trying again
+sleepbase=60
+
+process_args ()
+{
+	# 1/2
+	eval set -- $(getopt -n $invname -o hw: -l help,wait: -- "$@")
+
+	# 2/2
+	while true; do case $1 in
+		
+	(-w|--wait)
+	waitsecs=${2:?}; ((waitsecs > sleepbase)) ||
+		bomb "wait insufficient, base: ${sleepbase}s"
+	shift 2
+	;;
+
+	(-h|--help) usage; exit;;
+	(--) shift; break;;
+	(*) usagex;;
+	esac; done
+
+	args=("$@")
+}
+
+uplink ()
+{
+	while true
+	do
+		start=$SECONDS
+		if ! ping -q -i0.1 -c3 -w3 8.8.8.8 &>/dev/null
+		then
+			if [[ $waitsecs ]]
+			then
+				if ((waitsecs))
+				then
+					# will be zero if interface is down.
+					# if up but no uplink, add ping delays
+					#
+					end=$SECONDS
+					took=$((end - start))
+					let sofar+=$took
+					((sofar >= waitsecs)) &&
+						bomb "no reply after ${sofar}s"
+				fi
+			else
+				bomb "no reply and not waiting"
+			fi
+		else
+			break
+		fi
+
+		sleep $sleepbase
+		let sofar+=$sleepbase
+	done
+}
+
+main ()
+{
+	process_args "$@" || exit
+
+	if [[ $(declare -F $invname) ]]
+	then $invname "${args[@]}"
+	else bomb "unimplemented command '$invname'"; fi
+}
+
+invname=${0##*/} # 0.9.0
+invdir=${0%/*}
+
+main "$@"
