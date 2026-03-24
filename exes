@@ -73,12 +73,26 @@ do
 		entry="${scanned[i++]}"
 		exes+=("$entry")
 
-		# $ file --raw -k --mime-type --print0 --print0 flake8 | oda
-		#  f   l   a   k   e   8 nul  nl   -  sp   t   e   x   t   /   x
-		#  -   s   c   r   i   p   t   .   p   y   t   h   o   n nul
+		# version difference, probably due to this (from man page):
+		#    "Make file -ki work, i.e. give multiple MIME types."
+		#
+		# old file:
+		#
+		#   $ file --raw -k --mime-type --print0 --print0 flake8 | oda
+		#    f   l   a   k   e   8 nul  nl   -  sp   t   e   x   t   /   x
+		#    -   s   c   r   i   p   t   .   p   y   t   h   o   n nul
+		#
+		# new file:
+		#
+		#  $ file --raw -k --mime-type --print0 --print0 flake8 | oda
+		#    f   l   a   k   e   8 nul  nl   -  sp   t   e   x   t   /   x
+		#    -   s   c   r   i   p   t   .   p   y   t   h   o   n  nl   -
+		#   sp   t   e   x   t   /   p   l   a   i   n nul
 		#
 		matches=(${scanned[i++]})
-		magic="${matches[@]:(-1)}"
+		#magic="${matches[@]:(-1)}" # used this for old file
+		magic="${matches[1]}" # this should work with new file
+		#declare -p scanned matches magic
 
 		if [[ $magic == text/* ]]; then
 			scripts+=("$entry")
