@@ -91,7 +91,7 @@ do
 		#
 		matches=(${scanned[i++]})
 		#magic="${matches[@]:(-1)}" # used this for old file
-		magic="${matches[1]}" # this should work with new file
+		magic="${matches[0]}" # this should work with new file
 		#declare -p scanned matches magic
 
 		if [[ $magic == text/* ]]; then
