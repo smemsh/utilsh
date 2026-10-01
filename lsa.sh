@@ -16,11 +16,13 @@
 
 invocation_name=${0##*/}
 
+[[ $(type -P gnuls) ]] && lsbin=gnuls || lsbin=ls
+
 # todo: move this to shell init
 # instead we have ugly exec and parse of version output here
 #
 [[ $_BASHRC_HAS_LS_DIRSFIRST ]] || {
-	[[ $(ls --version) =~ ([[:digit:]]+) ]] &&
+	[[ $($lsbin --version) =~ ([[:digit:]]+) ]] &&
 		((${BASH_REMATCH[1]} >= 6))  &&
 			export _BASHRC_HAS_LS_DIRSFIRST=1
 }
@@ -29,7 +31,7 @@ __ls ()
 {
 	local r p
 
-	ls \
+	$lsbin \
 		-hAF \
 		--color=always \
 		--time-style=+$HISTTIMEFORMAT \
@@ -113,7 +115,7 @@ lstc ()
 
 	invocation_name=$1; shift
 
-	ls -1Flt --color=never --time-style=+$HISTTIMEFORMAT "$@" |
+	$lsbin -1Flt --color=never --time-style=+$HISTTIMEFORMAT "$@" |
 	sed -e '/\/$/d' | sed -e '0,/^total/d' | # remove dirs and "total"
 	awk '{print $6, $7}' | # date and name
 	awk '{
@@ -138,7 +140,7 @@ lsu ()
 {
 	local r p
 
-	ls -lAF --color=always --time-style=+$HISTTIMEFORMAT "$@" |
+	$lsbin -lAF --color=always --time-style=+$HISTTIMEFORMAT "$@" |
 	less -ER
 
 	r=$? p=${PIPESTATUS[0]}
@@ -150,7 +152,7 @@ lsh ()
 {
 	local r p
 
-	ls -CFw $COLUMNS --color=always "$@" |
+	$lsbin -CFw $COLUMNS --color=always "$@" |
 	less -ERX
 
 	r=$? p=${PIPESTATUS[0]}
@@ -162,7 +164,7 @@ lsr ()
 {
 	local r p
 
-	ls -CAF --color=always "$@" |
+	$lsbin -CAF --color=always "$@" |
 	less -ER
 
 	r=$? p=${PIPESTATUS[0]}
@@ -173,7 +175,7 @@ llatest ()
 {
 	local r p
 
-	ls -1t ${@} |
+	$lsbin -1t ${@} |
 	head -1
 
 	r=$? p=${PIPESTATUS[0]}
@@ -184,7 +186,7 @@ loldest ()
 {
 	local r p
 
-	ls -1t ${@} |
+	$lsbin -1t ${@} |
 	tail -1
 
 	r=$? p=${PIPESTATUS[0]}

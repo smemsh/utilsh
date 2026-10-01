@@ -91,7 +91,8 @@ do
 		#
 		matches=(${scanned[i++]})
 		#magic="${matches[@]:(-1)}" # used this for old file
-		magic="${matches[0]}" # this should work with new file
+		#magic="${matches[0]}" # this worked with new file, but now doesn't ?!?
+		magic="${matches[1]}" # this should work with new file TODO always so?
 		#declare -p scanned matches magic
 
 		if [[ $magic == text/* ]]; then
